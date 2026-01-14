@@ -300,7 +300,13 @@ function onStageComplete() {
 
     // Show victory screen
     const isBossStage = battle.isFinalQuest && battle.stageIndex === 4;
-    document.getElementById('victory-title').textContent = isBossStage ? 'Boss Defeated!' : 'Stage Complete!';
+    let victoryTitle = 'Stage Complete!';
+    if (questComplete && !battle.isWilderness) {
+        victoryTitle = 'Quest Complete!';
+    } else if (isBossStage) {
+        victoryTitle = 'Boss Defeated!';
+    }
+    document.getElementById('victory-title').textContent = victoryTitle;
     document.getElementById('reward-gold').textContent = `+${battle.goldEarned}`;
     document.getElementById('reward-xp').textContent = `+${battle.xpEarned}`;
 
