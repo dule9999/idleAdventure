@@ -123,8 +123,9 @@ function openJobBoard(cityId) {
     // Header
     const header = document.createElement('div');
     header.className = 'job-board-header';
+    const headerTitle = cityId === 'wilderness' ? city.name : `${city.name} Job Board`;
     header.innerHTML = `
-        <h2>${city.name} Job Board</h2>
+        <h2>${headerTitle}</h2>
         <button class="close-btn" id="close-job-board">&times;</button>
     `;
     container.appendChild(header);
@@ -157,7 +158,29 @@ function openJobBoard(cityId) {
                     <button class="fight-btn" disabled>Locked</button>
                 </div>
             `;
+        } else if (quest.isWilderness) {
+            // Wilderness - no rewards shown, always fightable
+            questCard.innerHTML = `
+                <div class="quest-header">
+                    <span class="quest-name">${quest.name}</span>
+                </div>
+                <p class="quest-description">${quest.description}</p>
+                <div class="quest-progress">
+                    <span>Progress: ${completedStages} / 5</span>
+                    <div class="quest-stages">
+                        ${[0, 1, 2, 3, 4].map(i => {
+                            const done = progress && progress[i];
+                            const isBoss = i === 4;
+                            return `<span class="quest-stage${done ? ' done' : ''}${isBoss ? ' boss' : ''}">${isBoss ? 'B' : i + 1}</span>`;
+                        }).join('')}
+                    </div>
+                </div>
+                <div class="quest-actions">
+                    <button class="fight-btn" data-quest="${quest.id}">Explore</button>
+                </div>
+            `;
         } else {
+            // Regular quest with rewards
             questCard.innerHTML = `
                 <div class="quest-header">
                     <span class="quest-name">${quest.name}</span>

@@ -57,9 +57,17 @@ const CITIES = [
 // HP and XP scale with level: base * (1 + 0.2 * (level - 1))
 // ------------------------------------------------------------
 const ENEMY_TYPES = {
-    // Wilderness creatures (weak)
-    wild_rat: { name: 'Wild Rat', baseHp: 15, baseXp: 5 },
-    wild_boar: { name: 'Wild Boar', baseHp: 25, baseXp: 8 },
+    // Wilderness creatures (weak, fixed stats - no scaling)
+    wild_rat: { name: 'Wild Rat', baseHp: 12, baseXp: 2, baseGold: 1 },
+    wild_boar: { name: 'Wild Boar', baseHp: 18, baseXp: 3, baseGold: 2 },
+    snake: { name: 'Snake', baseHp: 10, baseXp: 2, baseGold: 1 },
+    viper: { name: 'Viper', baseHp: 14, baseXp: 2, baseGold: 1 },
+    wolf: { name: 'Wolf', baseHp: 20, baseXp: 3, baseGold: 2 },
+    fox: { name: 'Fox', baseHp: 12, baseXp: 2, baseGold: 1 },
+    wild_cat: { name: 'Wild Cat', baseHp: 15, baseXp: 2, baseGold: 1 },
+    tiger: { name: 'Tiger', baseHp: 25, baseXp: 4, baseGold: 3 },
+    bear: { name: 'Bear', baseHp: 30, baseXp: 5, baseGold: 3 },
+    badger: { name: 'Badger', baseHp: 16, baseXp: 2, baseGold: 1 },
 
     // Goblin hierarchy (Millbrook)
     goblin_runt: { name: 'Goblin Runt', baseHp: 20, baseXp: 6 },
@@ -83,16 +91,17 @@ const ENEMY_TYPES = {
 // Sequential unlock: quest N requires quest N-1 to be completed
 // ------------------------------------------------------------
 const QUESTS = [
-    // Wilderness - always available farming area
+    // Wilderness - infinite farming area (not a real quest)
     {
         id: 'wilderness_1',
         cityId: 'wilderness',
-        name: 'Hunt Wildlife',
-        description: 'Hunt wild creatures for basic supplies.',
+        name: 'Explore',
+        description: 'Hunt wild creatures for gold and experience.',
         zoneId: 'wilderness_plains',
         reputationReward: 0,
-        goldReward: 15,
-        unlockConditions: []
+        goldReward: 0,
+        unlockConditions: [],
+        isWilderness: true
     },
 
     // Millbrook - 10 sequential goblin quests
@@ -203,14 +212,14 @@ const QUESTS = [
 // enemyLevel scales enemy stats: hp = baseHp * (1 + 0.25 * (level - 1))
 // ------------------------------------------------------------
 const ZONES = [
-    // Wilderness - easy farming zone
+    // Wilderness - easy farming zone (all level 1, randomized enemies)
     {
         id: 'wilderness_plains',
-        name: 'Wilderness Plains',
+        name: 'Wilderness',
         tier: 1,
         enemyLevel: 1,
-        enemies: ['wild_rat', 'wild_boar'],
-        boss: { type: 'wild_boar', level: 2 }
+        enemies: ['wild_rat', 'wild_boar', 'snake', 'viper', 'wolf', 'fox', 'wild_cat', 'tiger', 'bear', 'badger'],
+        boss: { type: 'bear', level: 1 }  // Boss type ignored for wilderness (random), but needed for structure
     },
 
     // Millbrook zones (1-10)

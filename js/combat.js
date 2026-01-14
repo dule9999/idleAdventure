@@ -19,7 +19,8 @@ function startBattle(questId, stageIndex) {
         enemy: null,
         goldEarned: 0,
         xpEarned: 0,
-        ingredientsEarned: []
+        ingredientsEarned: [],
+        isWilderness: quest.isWilderness || false
     };
 
     // Heal hero to full
@@ -52,7 +53,35 @@ function spawnEnemy() {
     const zone = getZoneById(battle.zoneId);
     const isBoss = battle.stageIndex === 4;
 
-    // Get enemy type and level
+    // Handle wilderness differently - all level 1, fixed low damage
+    if (battle.isWilderness) {
+        // Random enemy from wilderness pool (even for boss stage)
+        const enemyTypeId = zone.enemies[randomInt(0, zone.enemies.length - 1)];
+        const enemyType = ENEMY_TYPES[enemyTypeId];
+
+        // Wilderness: fixed stats, no scaling
+        const hp = isBoss ? Math.floor(enemyType.baseHp * 1.5) : enemyType.baseHp;
+        const damage = isBoss ? 2 : 1;
+        const gold = enemyType.baseGold || 1;
+        const xp = enemyType.baseXp || 2;
+
+        battle.enemy = {
+            name: enemyType.name,
+            hp: hp,
+            maxHp: hp,
+            damage: damage,
+            xpDrop: [xp, xp + 1],
+            goldDrop: [gold, gold + 1],
+            isBoss: isBoss
+        };
+
+        updateBattleUI();
+        const nameEl = document.getElementById('enemy-name');
+        nameEl.classList.toggle('boss', isBoss);
+        return;
+    }
+
+    // Regular quest enemies
     let enemyTypeId, enemyLevel;
     if (isBoss) {
         enemyTypeId = zone.boss.type;
@@ -214,8 +243,14 @@ function onStageComplete() {
 
     // Check if entire quest is complete
     const questComplete = gameState.questProgress[battle.questId].every(s => s);
-    if (questComplete && !gameState.completedQuests.includes(battle.questId)) {
-        // Add to pending rewards (collect from job board)
+
+    // For wilderness, reset progress after completion so it's replayable
+    if (questComplete && battle.isWilderness) {
+        gameState.questProgress[battle.questId] = [false, false, false, false, false];
+    }
+
+    // For regular quests (not wilderness), add to pending rewards
+    if (questComplete && !battle.isWilderness && !gameState.completedQuests.includes(battle.questId)) {
         if (!gameState.pendingRewards.includes(battle.questId)) {
             gameState.pendingRewards.push(battle.questId);
         }
@@ -245,21 +280,24 @@ function onStageComplete() {
         }
     }
 
-    // Show quest complete message if applicable
-    if (questComplete) {
+    // Show quest complete message if applicable (not for wilderness)
+    if (questComplete && !battle.isWilderness) {
         const quest = getQuestById(battle.questId);
         logCombat(`<span class="log-level">QUEST COMPLETE: ${quest.name}! Return to the job board to collect your reward.</span>`);
     }
 
-    // Enable/disable next stage button
+    // Show/hide next stage button
     const nextStageBtn = document.getElementById('btn-next-stage');
     if (questComplete) {
-        nextStageBtn.disabled = true;
-        nextStageBtn.textContent = 'Quest Complete';
+        nextStageBtn.style.display = 'none';
     } else {
-        nextStageBtn.disabled = false;
+        nextStageBtn.style.display = '';
         nextStageBtn.textContent = 'Next Stage';
     }
+
+    // Update back button text for wilderness
+    const backBtn = document.getElementById('btn-back-job-board');
+    backBtn.textContent = battle.isWilderness ? 'Return' : 'Back to Job Board';
 
     showScreen('victory');
 }
