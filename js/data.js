@@ -27,9 +27,10 @@ const GAME_CONFIG = {
 // ------------------------------------------------------------
 const INGREDIENT_TIERS = [
     { id: 'common', name: 'Common', dropRate: 0.50, color: '#9ca3af' },
-    { id: 'rare', name: 'Rare', dropRate: 0.10, color: '#3b82f6' },
-    { id: 'epic', name: 'Epic', dropRate: 0.02, color: '#a855f7' },
-    { id: 'legendary', name: 'Legendary', dropRate: 0.004, color: '#f97316' }
+    { id: 'uncommon', name: 'Uncommon', dropRate: 0.15, color: '#22c55e' },
+    { id: 'rare', name: 'Rare', dropRate: 0.05, color: '#3b82f6' },
+    { id: 'epic', name: 'Epic', dropRate: 0.015, color: '#a855f7' },
+    { id: 'legendary', name: 'Legendary', dropRate: 0.005, color: '#f97316' }
 ];
 
 const INGREDIENT_TYPES = ['Fangs', 'Hide', 'Bones', 'Essence', 'Claws'];

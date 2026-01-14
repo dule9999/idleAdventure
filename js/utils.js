@@ -63,11 +63,16 @@ function getHeroTrainingCost(heroLevel) {
     return Math.floor(50 * Math.pow(1.5, heroLevel - 1));
 }
 
-function rollIngredientDrops() {
+function rollIngredientDrops(allowedTiers = null) {
     const drops = [];
     const type = INGREDIENT_TYPES[randomInt(0, INGREDIENT_TYPES.length - 1)];
 
-    INGREDIENT_TIERS.forEach(tier => {
+    // Filter tiers if specific ones are allowed, otherwise use all
+    const tiers = allowedTiers
+        ? INGREDIENT_TIERS.filter(t => allowedTiers.includes(t.id))
+        : INGREDIENT_TIERS;
+
+    tiers.forEach(tier => {
         if (Math.random() < tier.dropRate) {
             drops.push({ tier: tier.id, type: type, tierData: tier });
         }

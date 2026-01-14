@@ -66,7 +66,7 @@ function spawnEnemy() {
         const xp = enemyType.baseXp || 2;
 
         battle.enemy = {
-            name: enemyType.name,
+            name: `${enemyType.name} Lv.1`,
             hp: hp,
             maxHp: hp,
             damage: damage,
@@ -115,7 +115,7 @@ function spawnEnemy() {
     const goldMax = isBoss ? baseGold * 5 : Math.floor(baseGold * 1.5);
 
     // Build enemy name with level indicator
-    const displayName = enemyLevel > 1 ? `${enemyType.name} Lv.${enemyLevel}` : enemyType.name;
+    const displayName = `${enemyType.name} Lv.${enemyLevel}`;
 
     battle.enemy = {
         name: displayName,
@@ -196,8 +196,16 @@ function onEnemyDefeated() {
     const xp = randomInt(enemy.xpDrop[0], enemy.xpDrop[1]);
     battle.xpEarned += xp;
 
-    // Roll for ingredient drops
-    const drops = rollIngredientDrops();
+    // Roll for ingredient drops based on zone
+    // Wilderness: common only, Millbrook: common + uncommon
+    let allowedTiers = null;
+    if (battle.isWilderness) {
+        allowedTiers = ['common'];
+    } else {
+        // Regular quests (Millbrook) get common and uncommon
+        allowedTiers = ['common', 'uncommon'];
+    }
+    const drops = rollIngredientDrops(allowedTiers);
     drops.forEach(drop => {
         addIngredient(drop.tier, drop.type);
         battle.ingredientsEarned.push(drop);
