@@ -677,80 +677,146 @@ function renderForge() {
     `;
     container.appendChild(header);
 
-    // Equipment sections
+    // === SECTION 1: Currently Equipped ===
+    const equippedSection = document.createElement('div');
+    equippedSection.className = 'forge-section forge-equipped';
+    equippedSection.innerHTML = `<h3>Currently Equipped</h3>`;
+
+    const equippedGrid = document.createElement('div');
+    equippedGrid.className = 'forge-equipped-grid';
+
     ['weapon', 'armor'].forEach(slot => {
-        const section = document.createElement('div');
-        section.className = 'forge-section';
-
-        const slotTitle = slot.charAt(0).toUpperCase() + slot.slice(1);
-        section.innerHTML = `<h3>${slotTitle}</h3>`;
-
         const equip = gameState.hero.equipment[slot];
-        const currentTier = gameState.hero.equipmentTier[slot];
         const currentLevel = gameState.hero.equipmentLevel[slot];
-        const tiers = SHOP_TIERS[slot];
-        const maxLevel = GAME_CONFIG.MAX_IMPROVEMENT_LEVEL;
         const improveBonus = GAME_CONFIG.IMPROVE_BONUS[slot];
-
         const statLabel = slot === 'weapon' ? 'DMG' : 'HP';
         const totalBonus = equip.value + (currentLevel * improveBonus);
+        const levelDisplay = currentLevel > 0 ? ` +${currentLevel}` : '';
+        const slotIcon = slot === 'weapon' ? '⚔' : '🛡';
 
-        // Current equipment item
-        const itemDiv = document.createElement('div');
-        const isMaxTier = currentTier >= tiers.length;
-        const isMaxLevel = currentLevel >= maxLevel;
-        const isFullyMaxed = isMaxTier && isMaxLevel;
-
-        itemDiv.className = `forge-item${isFullyMaxed ? ' maxed' : ''}`;
-
-        // Calculate improve cost
-        const improveCost = getImproveCost(slot);
-        const canImprove = !isMaxLevel && gameState.hero.gold >= improveCost;
-
-        // Calculate craft cost (next tier)
-        let craftCost = 0;
-        let nextTierItem = null;
-        if (!isMaxTier) {
-            nextTierItem = tiers[currentTier];
-            craftCost = nextTierItem.cost;
-        }
-        const canCraft = !isMaxTier && gameState.hero.gold >= craftCost;
-
-        // Build the display
-        let levelDisplay = currentLevel > 0 ? ` +${currentLevel}` : '';
-        let improvePreview = !isMaxLevel ? `→ +${currentLevel + 1} (+${improveBonus} ${statLabel})` : '';
-        let craftPreview = nextTierItem ? `→ ${nextTierItem.name} (+${nextTierItem.value} ${statLabel})` : '';
-
-        itemDiv.innerHTML = `
-            <div class="forge-item-header">
-                <span class="forge-item-name">${equip.name}${levelDisplay}</span>
-                <span class="forge-item-slot">${slot}</span>
-            </div>
-            <div class="forge-item-stats">
-                <span class="forge-item-current">Current: +${totalBonus} ${statLabel}</span>
-                ${isFullyMaxed ? '<span class="forge-item-bonus">MAXED</span>' : ''}
-            </div>
-            <div class="forge-item-actions">
-                ${!isMaxLevel ? `
-                    <button class="forge-btn improve-btn" data-slot="${slot}" ${!canImprove ? 'disabled' : ''}>
-                        Improve ${improvePreview} (${improveCost}g)
-                    </button>
-                ` : `
-                    <button class="forge-btn improve-btn" disabled>Max Level</button>
-                `}
-                ${!isMaxTier ? `
-                    <button class="forge-btn craft-btn" data-slot="${slot}" ${!canCraft ? 'disabled' : ''}>
-                        Craft ${craftPreview} (${craftCost}g)
-                    </button>
-                ` : `
-                    <button class="forge-btn craft-btn" disabled>Max Tier</button>
-                `}
+        const itemCard = document.createElement('div');
+        itemCard.className = 'forge-equipped-item';
+        itemCard.innerHTML = `
+            <span class="equipped-icon">${slotIcon}</span>
+            <div class="equipped-info">
+                <span class="equipped-name">${equip.name}${levelDisplay}</span>
+                <span class="equipped-stat">+${totalBonus} ${statLabel}</span>
             </div>
         `;
-
-        section.appendChild(itemDiv);
-        container.appendChild(section);
+        equippedGrid.appendChild(itemCard);
     });
+
+    equippedSection.appendChild(equippedGrid);
+    container.appendChild(equippedSection);
+
+    // === SECTION 2: Crafting Recipes ===
+    const craftSection = document.createElement('div');
+    craftSection.className = 'forge-section forge-recipes';
+    craftSection.innerHTML = `<h3>Crafting Recipes</h3>`;
+
+    const recipesGrid = document.createElement('div');
+    recipesGrid.className = 'forge-recipes-grid';
+
+    ['weapon', 'armor'].forEach(slot => {
+        const currentTier = gameState.hero.equipmentTier[slot];
+        const tiers = SHOP_TIERS[slot];
+        const isMaxTier = currentTier >= tiers.length;
+        const statLabel = slot === 'weapon' ? 'DMG' : 'HP';
+        const slotLabel = slot.charAt(0).toUpperCase() + slot.slice(1);
+
+        const recipeCard = document.createElement('div');
+        recipeCard.className = `forge-recipe-card${isMaxTier ? ' maxed' : ''}`;
+
+        if (isMaxTier) {
+            const maxItem = tiers[tiers.length - 1];
+            recipeCard.innerHTML = `
+                <div class="recipe-header">
+                    <span class="recipe-slot">${slotLabel}</span>
+                    <span class="recipe-tier">Max Tier</span>
+                </div>
+                <div class="recipe-name">${maxItem.name}</div>
+                <div class="recipe-stat">+${maxItem.value} ${statLabel}</div>
+                <button class="forge-btn craft-btn" disabled>Fully Crafted</button>
+            `;
+        } else {
+            const nextItem = tiers[currentTier];
+            const canAfford = gameState.hero.gold >= nextItem.cost;
+            recipeCard.innerHTML = `
+                <div class="recipe-header">
+                    <span class="recipe-slot">${slotLabel}</span>
+                    <span class="recipe-tier">Tier ${currentTier + 1}</span>
+                </div>
+                <div class="recipe-name">${nextItem.name}</div>
+                <div class="recipe-stat">+${nextItem.value} ${statLabel}</div>
+                <button class="forge-btn craft-btn" data-slot="${slot}" ${!canAfford ? 'disabled' : ''}>
+                    Craft (${nextItem.cost}g)
+                </button>
+            `;
+        }
+
+        recipesGrid.appendChild(recipeCard);
+    });
+
+    craftSection.appendChild(recipesGrid);
+    container.appendChild(craftSection);
+
+    // === SECTION 3: Upgrade Station ===
+    const upgradeSection = document.createElement('div');
+    upgradeSection.className = 'forge-section forge-upgrades';
+    upgradeSection.innerHTML = `<h3>Upgrade Station</h3>`;
+
+    const upgradesGrid = document.createElement('div');
+    upgradesGrid.className = 'forge-upgrades-grid';
+
+    ['weapon', 'armor'].forEach(slot => {
+        const equip = gameState.hero.equipment[slot];
+        const currentLevel = gameState.hero.equipmentLevel[slot];
+        const maxLevel = GAME_CONFIG.MAX_IMPROVEMENT_LEVEL;
+        const improveBonus = GAME_CONFIG.IMPROVE_BONUS[slot];
+        const isMaxLevel = currentLevel >= maxLevel;
+        const statLabel = slot === 'weapon' ? 'DMG' : 'HP';
+        const slotLabel = slot.charAt(0).toUpperCase() + slot.slice(1);
+        const improveCost = getImproveCost(slot);
+        const canAfford = gameState.hero.gold >= improveCost;
+
+        const upgradeCard = document.createElement('div');
+        upgradeCard.className = `forge-upgrade-card${isMaxLevel ? ' maxed' : ''}`;
+
+        // Level indicator dots
+        let levelDots = '';
+        for (let i = 0; i < maxLevel; i++) {
+            levelDots += `<span class="level-dot${i < currentLevel ? ' filled' : ''}"></span>`;
+        }
+
+        if (isMaxLevel) {
+            upgradeCard.innerHTML = `
+                <div class="upgrade-header">
+                    <span class="upgrade-slot">${slotLabel}</span>
+                    <div class="upgrade-level">${levelDots}</div>
+                </div>
+                <div class="upgrade-name">${equip.name} +${currentLevel}</div>
+                <div class="upgrade-status">Maximum Level</div>
+                <button class="forge-btn improve-btn" disabled>Fully Upgraded</button>
+            `;
+        } else {
+            upgradeCard.innerHTML = `
+                <div class="upgrade-header">
+                    <span class="upgrade-slot">${slotLabel}</span>
+                    <div class="upgrade-level">${levelDots}</div>
+                </div>
+                <div class="upgrade-name">${equip.name}${currentLevel > 0 ? ` +${currentLevel}` : ''}</div>
+                <div class="upgrade-preview">+${improveBonus} ${statLabel} per level</div>
+                <button class="forge-btn improve-btn" data-slot="${slot}" ${!canAfford ? 'disabled' : ''}>
+                    Upgrade to +${currentLevel + 1} (${improveCost}g)
+                </button>
+            `;
+        }
+
+        upgradesGrid.appendChild(upgradeCard);
+    });
+
+    upgradeSection.appendChild(upgradesGrid);
+    container.appendChild(upgradeSection);
 
     // Event listeners
     document.getElementById('close-forge').addEventListener('click', closeForge);
