@@ -220,6 +220,7 @@
     position: sticky;
     top: 0;
     background: var(--bg-panel);
+    z-index: 1;
 }
 
 .job-board-header h2 {
@@ -830,9 +831,26 @@
     font-weight: 600;
 }
 
+.reward-row-ingredients {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
 #reward-ingredients {
-    color: var(--text-primary);
-    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.95rem;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+#reward-ingredients span {
+    font-weight: 500;
+    display: block;
+    text-align: left;
 }
 
 .victory-buttons {

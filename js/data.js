@@ -6,7 +6,8 @@
 // GAME CONFIGURATION
 // ------------------------------------------------------------
 const GAME_CONFIG = {
-    ENEMIES_PER_STAGE: [3, 4, 5, 6],
+    ENEMIES_PER_STAGE: [2, 3, 4, 5, 6],           // Normal quests: 20 enemies total
+    ENEMIES_PER_STAGE_FINAL: [3, 4, 5, 6, 1],     // Final quest: 18 enemies + 1 boss
     BASE_ENEMY_DAMAGE: 5,
     AREA_PROGRESS_MAX: 8,
     AREA_DAMAGE_BONUS: 1,
@@ -33,7 +34,7 @@ const INGREDIENT_TIERS = [
     { id: 'legendary', name: 'Legendary', dropRate: 0.005, color: '#f97316' }
 ];
 
-const INGREDIENT_TYPES = ['Fangs', 'Hide', 'Bones', 'Essence', 'Claws'];
+const INGREDIENT_TYPES = ['Essence'];
 
 // ------------------------------------------------------------
 // REPUTATION TIERS
@@ -119,6 +120,7 @@ const QUESTS = [
 
     // Millbrook - 10 sequential goblin quests
     // Reputation: 70 base, +20% each quest (total: 1817)
+    // Gold rewards reduced for balance (total: ~1290)
     {
         id: 'millbrook_1',
         cityId: 'millbrook',
@@ -126,7 +128,7 @@ const QUESTS = [
         description: 'Goblin scouts have been spotted near the farms. Drive them off.',
         zoneId: 'millbrook_zone_1',
         reputationReward: 70,
-        goldReward: 30,
+        goldReward: 15,
         unlockConditions: []
     },
     {
@@ -136,7 +138,7 @@ const QUESTS = [
         description: 'A small raiding party is targeting the outer farms.',
         zoneId: 'millbrook_zone_2',
         reputationReward: 84,
-        goldReward: 50,
+        goldReward: 25,
         unlockConditions: ['millbrook_1']
     },
     {
@@ -146,7 +148,7 @@ const QUESTS = [
         description: 'Goblin archers are harassing travelers on the road.',
         zoneId: 'millbrook_zone_3',
         reputationReward: 101,
-        goldReward: 75,
+        goldReward: 40,
         unlockConditions: ['millbrook_2']
     },
     {
@@ -156,7 +158,7 @@ const QUESTS = [
         description: 'Goblins riding wargs have been attacking caravans.',
         zoneId: 'millbrook_zone_4',
         reputationReward: 121,
-        goldReward: 100,
+        goldReward: 55,
         unlockConditions: ['millbrook_3']
     },
     {
@@ -166,7 +168,7 @@ const QUESTS = [
         description: 'Goblin shamans are performing dark rituals in the woods.',
         zoneId: 'millbrook_zone_5',
         reputationReward: 145,
-        goldReward: 150,
+        goldReward: 75,
         unlockConditions: ['millbrook_4']
     },
     {
@@ -176,7 +178,7 @@ const QUESTS = [
         description: 'Crazed goblin berserkers are launching attacks on the village.',
         zoneId: 'millbrook_zone_6',
         reputationReward: 174,
-        goldReward: 200,
+        goldReward: 100,
         unlockConditions: ['millbrook_5']
     },
     {
@@ -186,7 +188,7 @@ const QUESTS = [
         description: 'A goblin war camp has been established nearby. It must be destroyed.',
         zoneId: 'millbrook_zone_7',
         reputationReward: 209,
-        goldReward: 275,
+        goldReward: 140,
         unlockConditions: ['millbrook_6']
     },
     {
@@ -196,7 +198,7 @@ const QUESTS = [
         description: 'A goblin captain commands a formidable guard. Take them out.',
         zoneId: 'millbrook_zone_8',
         reputationReward: 251,
-        goldReward: 375,
+        goldReward: 190,
         unlockConditions: ['millbrook_7']
     },
     {
@@ -206,18 +208,19 @@ const QUESTS = [
         description: 'The goblin warlord\'s elite troops are preparing a major assault.',
         zoneId: 'millbrook_zone_9',
         reputationReward: 301,
-        goldReward: 500,
+        goldReward: 250,
         unlockConditions: ['millbrook_8']
     },
     {
         id: 'millbrook_10',
         cityId: 'millbrook',
-        name: 'Slay the Goblin King',
-        description: 'End the goblin threat once and for all. Storm the king\'s stronghold.',
+        name: 'Slay the Goblin Chieftain',
+        description: 'End the goblin threat once and for all. Storm the chieftain\'s stronghold.',
         zoneId: 'millbrook_zone_10',
         reputationReward: 361,
-        goldReward: 750,
-        unlockConditions: ['millbrook_9']
+        goldReward: 400,
+        unlockConditions: ['millbrook_9'],
+        isFinalQuest: true
     }
 ];
 
@@ -315,7 +318,7 @@ const ZONES = [
         tier: 4,
         enemyLevel: 6,
         enemies: ['goblin_warlord', 'goblin_chieftain', 'warg_alpha'],
-        boss: { type: 'goblin_king', level: 6 }
+        boss: { type: 'goblin_chieftain', level: 6 }
     }
 ];
 

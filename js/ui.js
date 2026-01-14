@@ -183,8 +183,7 @@ function openJobBoard(cityId) {
                     <div class="quest-stages">
                         ${[0, 1, 2, 3, 4].map(i => {
                             const done = progress && progress[i];
-                            const isBoss = i === 4;
-                            return `<span class="quest-stage${done ? ' done' : ''}${isBoss ? ' boss' : ''}">${isBoss ? 'B' : i + 1}</span>`;
+                            return `<span class="quest-stage${done ? ' done' : ''}">${i + 1}</span>`;
                         }).join('')}
                     </div>
                 </div>
@@ -205,7 +204,7 @@ function openJobBoard(cityId) {
                     <div class="quest-stages">
                         ${[0, 1, 2, 3, 4].map(i => {
                             const done = progress && progress[i];
-                            const isBoss = i === 4;
+                            const isBoss = quest.isFinalQuest && i === 4;
                             return `<span class="quest-stage${done ? ' done' : ''}${isBoss ? ' boss' : ''}">${isBoss ? 'B' : i + 1}</span>`;
                         }).join('')}
                     </div>

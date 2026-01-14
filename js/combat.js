@@ -5,8 +5,9 @@
 function startBattle(questId, stageIndex) {
     const quest = getQuestById(questId);
     const zone = getZoneById(quest.zoneId);
-    const isBoss = stageIndex === 4;
-    const totalWaves = isBoss ? 1 : GAME_CONFIG.ENEMIES_PER_STAGE[stageIndex];
+    const isFinalQuest = quest.isFinalQuest || false;
+    const enemiesPerStage = isFinalQuest ? GAME_CONFIG.ENEMIES_PER_STAGE_FINAL : GAME_CONFIG.ENEMIES_PER_STAGE;
+    const totalWaves = enemiesPerStage[stageIndex];
 
     // Initialize battle state
     gameState.battle = {
@@ -20,7 +21,8 @@ function startBattle(questId, stageIndex) {
         goldEarned: 0,
         xpEarned: 0,
         ingredientsEarned: [],
-        isWilderness: quest.isWilderness || false
+        isWilderness: quest.isWilderness || false,
+        isFinalQuest: isFinalQuest
     };
 
     // Heal hero to full
@@ -36,12 +38,13 @@ function startBattle(questId, stageIndex) {
     spawnEnemy();
 
     // Update battle UI
+    const isBossStage = isFinalQuest && stageIndex === 4;
     document.getElementById('battle-zone').textContent = zone.name;
-    document.getElementById('battle-stage').textContent = isBoss ? 'Boss Fight' : `Stage ${stageIndex + 1}`;
+    document.getElementById('battle-stage').textContent = isBossStage ? 'Boss Fight' : `Stage ${stageIndex + 1}`;
 
     // Show battle screen
     showScreen('battle');
-    logCombat(`Entering ${zone.name}${isBoss ? ' - Boss Fight!' : ` Stage ${stageIndex + 1}`}`);
+    logCombat(`Entering ${zone.name}${isBossStage ? ' - Boss Fight!' : ` Stage ${stageIndex + 1}`}`);
 
     // Start game loop
     gameState.lastAutoAttack = performance.now();
@@ -51,33 +54,44 @@ function startBattle(questId, stageIndex) {
 function spawnEnemy() {
     const battle = gameState.battle;
     const zone = getZoneById(battle.zoneId);
-    const isBoss = battle.stageIndex === 4;
+    // Boss only spawns on final quest, stage 5
+    const isBoss = battle.isFinalQuest && battle.stageIndex === 4;
 
-    // Handle wilderness differently - all level 1, fixed low damage
+    // Handle wilderness differently - all level 1, fixed low damage, no boss
     if (battle.isWilderness) {
-        // Random enemy from wilderness pool (even for boss stage)
+        // Random enemy from wilderness pool
         const enemyTypeId = zone.enemies[randomInt(0, zone.enemies.length - 1)];
         const enemyType = ENEMY_TYPES[enemyTypeId];
 
         // Wilderness: fixed stats, no scaling
-        const hp = isBoss ? Math.floor(enemyType.baseHp * 1.5) : enemyType.baseHp;
-        const damage = isBoss ? 2 : 1;
-        const gold = enemyType.baseGold || 1;
-        const xp = enemyType.baseXp || 2;
+        const hp = enemyType.baseHp;
+        const damage = 1;
+
+        // Stage-based rewards per enemy for wilderness
+        const stageRewards = [
+            { gold: [1, 2], xp: [1, 2] },     // Stage 1 (2 enemies)
+            { gold: [2, 3], xp: [2, 3] },     // Stage 2 (3 enemies)
+            { gold: [3, 4], xp: [3, 4] },     // Stage 3 (4 enemies)
+            { gold: [4, 5], xp: [4, 5] },     // Stage 4 (5 enemies)
+            { gold: [5, 6], xp: [5, 6] }      // Stage 5 (6 enemies)
+        ];
+        const rewards = stageRewards[battle.stageIndex];
+
+        const displayName = `${enemyType.name} Lv.1`;
 
         battle.enemy = {
-            name: `${enemyType.name} Lv.1`,
+            name: displayName,
             hp: hp,
             maxHp: hp,
             damage: damage,
-            xpDrop: [xp, xp + 1],
-            goldDrop: [gold, gold + 1],
-            isBoss: isBoss
+            xpDrop: rewards.xp,
+            goldDrop: rewards.gold,
+            isBoss: false
         };
 
         updateBattleUI();
         const nameEl = document.getElementById('enemy-name');
-        nameEl.classList.toggle('boss', isBoss);
+        nameEl.classList.remove('boss');
         return;
     }
 
@@ -95,7 +109,7 @@ function spawnEnemy() {
 
     // Scale stats based on level: stat = base * (1 + 0.25 * (level - 1))
     const levelMultiplier = 1 + 0.25 * (enemyLevel - 1);
-    const scaledHp = Math.floor(enemyType.baseHp * levelMultiplier);
+    let scaledHp = Math.floor(enemyType.baseHp * levelMultiplier);
     const scaledXp = Math.floor(enemyType.baseXp * levelMultiplier);
 
     // Calculate damage based on zone tier and stage progression
@@ -104,25 +118,45 @@ function spawnEnemy() {
     let enemyDamage;
 
     if (isBoss) {
-        enemyDamage = baseDamage + (tierMultiplier - 1) * 3 + enemyLevel * 2 + GAME_CONFIG.BOSS_DAMAGE_BONUS;
+        // Boss HP and damage should be greater than 6 stage-4 enemies combined
+        // Calculate what a stage-4 enemy would have
+        const stage4EnemyDamage = baseDamage + (tierMultiplier - 1) * 2 + enemyLevel + 3 + 2; // stageIndex=3, avg wave=3
+
+        // Calculate average HP of zone's regular enemies
+        let avgEnemyHp = 0;
+        zone.enemies.forEach(eId => {
+            avgEnemyHp += ENEMY_TYPES[eId].baseHp;
+        });
+        avgEnemyHp = Math.floor((avgEnemyHp / zone.enemies.length) * levelMultiplier);
+
+        // Boss gets HP slightly more than 6 enemies combined
+        scaledHp = Math.floor(avgEnemyHp * 6 * 1.2);
+
+        // Boss damage slightly more than a single stage-4 enemy (but attacks once per round)
+        enemyDamage = Math.floor(stage4EnemyDamage * 1.5);
     } else {
         enemyDamage = baseDamage + (tierMultiplier - 1) * 2 + enemyLevel + battle.stageIndex + (battle.currentWave - 1);
     }
 
-    // Calculate gold drop based on tier and boss status
-    const baseGold = 3 + tierMultiplier * 2 + enemyLevel;
-    const goldMin = isBoss ? baseGold * 3 : baseGold;
-    const goldMax = isBoss ? baseGold * 5 : Math.floor(baseGold * 1.5);
+    // Calculate gold drop based on tier (reduced for balance)
+    const baseGold = 1 + tierMultiplier;
+    const goldMin = isBoss ? baseGold * 5 : baseGold;
+    const goldMax = isBoss ? baseGold * 8 : baseGold + 1;
 
-    // Build enemy name with level indicator
-    const displayName = `${enemyType.name} Lv.${enemyLevel}`;
+    // Calculate XP drop (reduced for balance - target ~level 5 after all Millbrook)
+    const reducedXp = Math.max(1, Math.floor(scaledXp * 0.33));
+    const xpMin = isBoss ? reducedXp * 3 : reducedXp;
+    const xpMax = isBoss ? reducedXp * 4 : reducedXp + 1;
+
+    // Build enemy name with level indicator (bosses always show Lv.1)
+    const displayName = isBoss ? `${enemyType.name} Lv.1` : `${enemyType.name} Lv.${enemyLevel}`;
 
     battle.enemy = {
         name: displayName,
         hp: scaledHp,
         maxHp: scaledHp,
         damage: enemyDamage,
-        xpDrop: [scaledXp, Math.floor(scaledXp * 1.3)],
+        xpDrop: [xpMin, xpMax],
         goldDrop: [goldMin, goldMax],
         isBoss: isBoss
     };
@@ -214,7 +248,7 @@ function onEnemyDefeated() {
     // Build log message
     let logMsg = `${enemy.name} defeated! <span class="log-gold">+${gold}g</span> <span class="log-xp">+${xp}xp</span>`;
     drops.forEach(drop => {
-        logMsg += ` <span class="log-ingredient" style="color:${drop.tierData.color}">+1 ${drop.tierData.name} ${drop.type}</span>`;
+        logMsg += ` <span class="log-ingredient" style="color:${drop.tierData.color}">+1 ${drop.tierData.name}</span>`;
     });
     logCombat(logMsg);
 
@@ -265,8 +299,8 @@ function onStageComplete() {
     }
 
     // Show victory screen
-    const isBoss = battle.stageIndex === 4;
-    document.getElementById('victory-title').textContent = isBoss ? 'Boss Defeated!' : 'Stage Complete!';
+    const isBossStage = battle.isFinalQuest && battle.stageIndex === 4;
+    document.getElementById('victory-title').textContent = isBossStage ? 'Boss Defeated!' : 'Stage Complete!';
     document.getElementById('reward-gold').textContent = `+${battle.goldEarned}`;
     document.getElementById('reward-xp').textContent = `+${battle.xpEarned}`;
 
@@ -274,13 +308,22 @@ function onStageComplete() {
     const goldRow = document.querySelector('#victory-rewards .reward-row:first-child');
     if (goldRow) goldRow.style.display = 'flex';
 
-    // Update reward display for ingredients
+    // Update reward display for ingredients (grouped by tier with counts)
     const ingredientDiv = document.getElementById('reward-ingredients');
     if (ingredientDiv) {
         if (battle.ingredientsEarned.length > 0) {
-            const ingredientList = battle.ingredientsEarned.map(d =>
-                `<span style="color:${d.tierData.color}">${d.tierData.name} ${d.type}</span>`
-            ).join(', ');
+            // Group ingredients by tier and count
+            const tierCounts = {};
+            battle.ingredientsEarned.forEach(d => {
+                if (!tierCounts[d.tier]) {
+                    tierCounts[d.tier] = { count: 0, tierData: d.tierData };
+                }
+                tierCounts[d.tier].count++;
+            });
+            // Build vertical list
+            const ingredientList = Object.values(tierCounts).map(t =>
+                `<span style="color:${t.tierData.color}">${t.tierData.name} x${t.count}</span>`
+            ).join('');
             ingredientDiv.innerHTML = ingredientList;
             ingredientDiv.parentElement.style.display = 'flex';
         } else {
