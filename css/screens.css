@@ -134,6 +134,7 @@
 }
 
 .city-btn {
+    margin-top: auto;
     padding: 12px;
     background: var(--bg-panel-light);
     border: 1px solid var(--border-color);
@@ -228,6 +229,26 @@
     border-color: var(--accent-gold);
     background: rgba(234, 179, 8, 0.1);
     animation: glow 2s infinite;
+}
+
+.quest-card.locked {
+    opacity: 0.5;
+    border-color: var(--border-color);
+    background: var(--bg-dark);
+}
+
+.quest-card.locked .quest-name {
+    color: var(--text-secondary);
+}
+
+.locked-reward {
+    color: var(--text-secondary) !important;
+    font-style: italic;
+}
+
+.locked-text {
+    color: var(--text-secondary);
+    font-style: italic;
 }
 
 @keyframes glow {

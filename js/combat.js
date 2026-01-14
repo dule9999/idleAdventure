@@ -50,44 +50,50 @@ function startBattle(questId, stageIndex) {
 function spawnEnemy() {
     const battle = gameState.battle;
     const zone = getZoneById(battle.zoneId);
-    const zoneIndex = ZONES.findIndex(z => z.id === battle.zoneId);
     const isBoss = battle.stageIndex === 4;
 
-    let enemyTemplate;
+    // Get enemy type and level
+    let enemyTypeId, enemyLevel;
     if (isBoss) {
-        enemyTemplate = zone.boss;
+        enemyTypeId = zone.boss.type;
+        enemyLevel = zone.boss.level;
     } else {
-        enemyTemplate = zone.enemies[randomInt(0, zone.enemies.length - 1)];
+        enemyTypeId = zone.enemies[randomInt(0, zone.enemies.length - 1)];
+        enemyLevel = zone.enemyLevel;
     }
 
-    // Calculate progressive damage scaling
+    const enemyType = ENEMY_TYPES[enemyTypeId];
+
+    // Scale stats based on level: stat = base * (1 + 0.25 * (level - 1))
+    const levelMultiplier = 1 + 0.25 * (enemyLevel - 1);
+    const scaledHp = Math.floor(enemyType.baseHp * levelMultiplier);
+    const scaledXp = Math.floor(enemyType.baseXp * levelMultiplier);
+
+    // Calculate damage based on zone tier and stage progression
     const baseDamage = GAME_CONFIG.BASE_ENEMY_DAMAGE;
-    const areaProgressMax = GAME_CONFIG.AREA_PROGRESS_MAX;
-    const areaBonus = GAME_CONFIG.AREA_DAMAGE_BONUS;
+    const tierMultiplier = zone.tier || 1;
     let enemyDamage;
 
-    // Use zone tier for scaling
-    const tierMultiplier = zone.tier || 1;
-
     if (isBoss) {
-        const lastNormalDamage = baseDamage + (tierMultiplier - 1) * (areaProgressMax + areaBonus) + 3 + 5;
-        const bossBonus = GAME_CONFIG.BOSS_DAMAGE_BONUS + (tierMultiplier - 1) * 2;
-        enemyDamage = lastNormalDamage + bossBonus;
+        enemyDamage = baseDamage + (tierMultiplier - 1) * 3 + enemyLevel * 2 + GAME_CONFIG.BOSS_DAMAGE_BONUS;
     } else {
-        enemyDamage = baseDamage + (tierMultiplier - 1) * (areaProgressMax + areaBonus) + battle.stageIndex + (battle.currentWave - 1);
+        enemyDamage = baseDamage + (tierMultiplier - 1) * 2 + enemyLevel + battle.stageIndex + (battle.currentWave - 1);
     }
 
     // Calculate gold drop based on tier and boss status
-    const baseGold = 5 + tierMultiplier * 3;
-    const goldMin = isBoss ? baseGold * 4 : baseGold;
-    const goldMax = isBoss ? baseGold * 6 : Math.floor(baseGold * 1.5);
+    const baseGold = 3 + tierMultiplier * 2 + enemyLevel;
+    const goldMin = isBoss ? baseGold * 3 : baseGold;
+    const goldMax = isBoss ? baseGold * 5 : Math.floor(baseGold * 1.5);
+
+    // Build enemy name with level indicator
+    const displayName = enemyLevel > 1 ? `${enemyType.name} Lv.${enemyLevel}` : enemyType.name;
 
     battle.enemy = {
-        name: enemyTemplate.name,
-        hp: enemyTemplate.baseHp,
-        maxHp: enemyTemplate.baseHp,
+        name: displayName,
+        hp: scaledHp,
+        maxHp: scaledHp,
         damage: enemyDamage,
-        xpDrop: enemyTemplate.xpDrop,
+        xpDrop: [scaledXp, Math.floor(scaledXp * 1.3)],
         goldDrop: [goldMin, goldMax],
         isBoss: isBoss
     };

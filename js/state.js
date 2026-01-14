@@ -117,11 +117,7 @@ function isQuestAvailable(questId) {
     // Already completed?
     if (gameState.completedQuests.includes(questId)) return false;
 
-    // Check reputation requirement
-    const cityRep = gameState.cityReputation[quest.cityId] || 0;
-    if (cityRep < quest.reputationRequired) return false;
-
-    // Check unlock conditions (other quests that must be completed)
+    // Check unlock conditions (previous quests that must be completed)
     for (const reqQuestId of quest.unlockConditions) {
         if (!gameState.completedQuests.includes(reqQuestId)) {
             return false;

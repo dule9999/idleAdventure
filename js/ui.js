@@ -71,7 +71,6 @@ function renderWorldMap() {
     CITIES.forEach(city => {
         const rep = gameState.cityReputation[city.id] || 0;
         const maxRep = city.maxReputation;
-        const repPercent = Math.min(100, (rep / maxRep) * 100);
         const availableQuests = getAvailableQuestsForCity(city.id);
         const pendingCount = availableQuests.filter(q =>
             gameState.pendingRewards.includes(q.id)
@@ -80,22 +79,26 @@ function renderWorldMap() {
         const card = document.createElement('div');
         card.className = 'city-card';
 
+        // Only show reputation for cities that have it
+        const repSection = maxRep > 0 ? `
+            <div class="city-rep">
+                <span>Reputation: ${rep} / ${maxRep}</span>
+                <div class="rep-bar-container">
+                    <div class="rep-bar" style="width: ${Math.min(100, (rep / maxRep) * 100)}%"></div>
+                </div>
+            </div>
+        ` : '';
+
+        const buttonText = city.id === 'wilderness' ? 'Explore' : 'Visit Job Board';
+
         card.innerHTML = `
             <div class="city-header">
                 <span class="city-name">${city.name}</span>
                 ${pendingCount > 0 ? `<span class="quest-notification">${pendingCount} rewards!</span>` : ''}
             </div>
             <p class="city-description">${city.description}</p>
-            <div class="city-rep">
-                <span>Reputation: ${rep} / ${maxRep}</span>
-                <div class="rep-bar-container">
-                    <div class="rep-bar" style="width: ${repPercent}%"></div>
-                </div>
-            </div>
-            <div class="city-quests">
-                <span>${availableQuests.length} job${availableQuests.length !== 1 ? 's' : ''} available</span>
-            </div>
-            <button class="city-btn" data-city="${city.id}">Visit Job Board</button>
+            ${repSection}
+            <button class="city-btn" data-city="${city.id}">${buttonText}</button>
         `;
 
         card.querySelector('.city-btn').addEventListener('click', () => {
@@ -111,7 +114,8 @@ function renderWorldMap() {
 // ------------------------------------------------------------
 function openJobBoard(cityId) {
     const city = getCityById(cityId);
-    const quests = getAvailableQuestsForCity(cityId);
+    // Get ALL quests for this city (not just available ones)
+    const allQuests = QUESTS.filter(q => q.cityId === cityId);
 
     const container = document.getElementById('job-board-content');
     container.innerHTML = '';
@@ -129,19 +133,31 @@ function openJobBoard(cityId) {
     const questList = document.createElement('div');
     questList.className = 'quest-list';
 
-    if (quests.length === 0) {
-        questList.innerHTML = '<p class="no-quests">No jobs available at this time.</p>';
-    } else {
-        quests.forEach(quest => {
-            const zone = getZoneById(quest.zoneId);
-            const progress = gameState.questProgress[quest.id];
-            const completedStages = progress.filter(s => s).length;
-            const isComplete = completedStages === 5;
-            const canCollect = gameState.pendingRewards.includes(quest.id);
+    allQuests.forEach(quest => {
+        const progress = gameState.questProgress[quest.id];
+        const completedStages = progress ? progress.filter(s => s).length : 0;
+        const isComplete = completedStages === 5;
+        const canCollect = gameState.pendingRewards.includes(quest.id);
+        const isAvailable = isQuestAvailable(quest.id);
+        const inProgress = isQuestInProgress(quest.id);
+        const isLocked = !isAvailable && !inProgress && !isComplete;
 
-            const questCard = document.createElement('div');
-            questCard.className = `quest-card${isComplete ? ' complete' : ''}${canCollect ? ' can-collect' : ''}`;
+        const questCard = document.createElement('div');
+        questCard.className = `quest-card${isComplete ? ' complete' : ''}${canCollect ? ' can-collect' : ''}${isLocked ? ' locked' : ''}`;
 
+        if (isLocked) {
+            // Show locked quest with minimal info
+            questCard.innerHTML = `
+                <div class="quest-header">
+                    <span class="quest-name">${quest.name}</span>
+                    <span class="quest-reward locked-reward">???</span>
+                </div>
+                <p class="quest-description locked-text">Complete previous quests to unlock.</p>
+                <div class="quest-actions">
+                    <button class="fight-btn" disabled>Locked</button>
+                </div>
+            `;
+        } else {
             questCard.innerHTML = `
                 <div class="quest-header">
                     <span class="quest-name">${quest.name}</span>
@@ -152,7 +168,7 @@ function openJobBoard(cityId) {
                     <span>Progress: ${completedStages} / 5</span>
                     <div class="quest-stages">
                         ${[0, 1, 2, 3, 4].map(i => {
-                            const done = progress[i];
+                            const done = progress && progress[i];
                             const isBoss = i === 4;
                             return `<span class="quest-stage${done ? ' done' : ''}${isBoss ? ' boss' : ''}">${isBoss ? 'B' : i + 1}</span>`;
                         }).join('')}
@@ -168,10 +184,10 @@ function openJobBoard(cityId) {
                     `}
                 </div>
             `;
+        }
 
-            questList.appendChild(questCard);
-        });
-    }
+        questList.appendChild(questCard);
+    });
 
     container.appendChild(questList);
 

@@ -39,309 +39,260 @@ const INGREDIENT_TYPES = ['Fangs', 'Hide', 'Bones', 'Essence', 'Claws'];
 // ------------------------------------------------------------
 const CITIES = [
     {
+        id: 'wilderness',
+        name: 'Wilderness',
+        description: 'The untamed lands outside civilization. A place to hunt and gather resources.',
+        maxReputation: 0
+    },
+    {
         id: 'millbrook',
         name: 'Millbrook',
-        description: 'A peaceful farming village troubled by creatures from nearby woods.',
-        maxReputation: 1000
-    },
-    {
-        id: 'ironhold',
-        name: 'Ironhold',
-        description: 'A fortified mining town built into the mountainside.',
-        maxReputation: 1500
-    },
-    {
-        id: 'ravenshire',
-        name: 'Ravenshire',
-        description: 'An ancient city shrouded in mystery and dark history.',
-        maxReputation: 2000
+        description: 'A peaceful farming village besieged by goblin raiders from the nearby woods.',
+        maxReputation: 5000
     }
 ];
 
 // ------------------------------------------------------------
+// ENEMY TYPES (Base stats for each creature type)
+// HP and XP scale with level: base * (1 + 0.2 * (level - 1))
+// ------------------------------------------------------------
+const ENEMY_TYPES = {
+    // Wilderness creatures (weak)
+    wild_rat: { name: 'Wild Rat', baseHp: 15, baseXp: 5 },
+    wild_boar: { name: 'Wild Boar', baseHp: 25, baseXp: 8 },
+
+    // Goblin hierarchy (Millbrook)
+    goblin_runt: { name: 'Goblin Runt', baseHp: 20, baseXp: 6 },
+    goblin_scout: { name: 'Goblin Scout', baseHp: 28, baseXp: 8 },
+    goblin_warrior: { name: 'Goblin Warrior', baseHp: 38, baseXp: 12 },
+    goblin_archer: { name: 'Goblin Archer', baseHp: 30, baseXp: 10 },
+    goblin_shaman: { name: 'Goblin Shaman', baseHp: 32, baseXp: 14 },
+    goblin_berserker: { name: 'Goblin Berserker', baseHp: 45, baseXp: 16 },
+    goblin_enforcer: { name: 'Goblin Enforcer', baseHp: 55, baseXp: 18 },
+    goblin_marauder: { name: 'Goblin Marauder', baseHp: 50, baseXp: 17 },
+    warg: { name: 'Warg', baseHp: 42, baseXp: 14 },
+    warg_alpha: { name: 'Alpha Warg', baseHp: 60, baseXp: 20 },
+    goblin_captain: { name: 'Goblin Captain', baseHp: 70, baseXp: 25 },
+    goblin_warlord: { name: 'Goblin Warlord', baseHp: 90, baseXp: 35 },
+    goblin_chieftain: { name: 'Goblin Chieftain', baseHp: 120, baseXp: 50 },
+    goblin_king: { name: 'Goblin King', baseHp: 200, baseXp: 100 }
+};
+
+// ------------------------------------------------------------
 // QUESTS (Jobs from city boards)
-// Each quest references a zone and has unlock conditions
+// Sequential unlock: quest N requires quest N-1 to be completed
 // ------------------------------------------------------------
 const QUESTS = [
-    // Millbrook Quests
+    // Wilderness - always available farming area
+    {
+        id: 'wilderness_1',
+        cityId: 'wilderness',
+        name: 'Hunt Wildlife',
+        description: 'Hunt wild creatures for basic supplies.',
+        zoneId: 'wilderness_plains',
+        reputationReward: 0,
+        goldReward: 15,
+        unlockConditions: []
+    },
+
+    // Millbrook - 10 sequential goblin quests
     {
         id: 'millbrook_1',
         cityId: 'millbrook',
-        name: 'Clear the Whispering Woods',
-        description: 'Goblins have been raiding farms. Drive them out.',
-        zoneId: 'whispering_woods',
-        reputationRequired: 0,
-        reputationReward: 150,
-        goldReward: 80,
+        name: 'Goblin Scouts',
+        description: 'Goblin scouts have been spotted near the farms. Drive them off.',
+        zoneId: 'millbrook_zone_1',
+        reputationReward: 50,
+        goldReward: 30,
         unlockConditions: []
     },
     {
         id: 'millbrook_2',
         cityId: 'millbrook',
-        name: 'Wolves at the Gate',
-        description: 'A wolf pack has grown too bold. Thin their numbers.',
-        zoneId: 'moonhowl_den',
-        reputationRequired: 0,
-        reputationReward: 200,
-        goldReward: 120,
-        unlockConditions: []
+        name: 'Raiding Party',
+        description: 'A small raiding party is targeting the outer farms.',
+        zoneId: 'millbrook_zone_2',
+        reputationReward: 75,
+        goldReward: 50,
+        unlockConditions: ['millbrook_1']
     },
     {
         id: 'millbrook_3',
         cityId: 'millbrook',
-        name: 'The Bandit Camp',
-        description: 'Bandits have set up camp near the trade road.',
-        zoneId: 'thornback_camp',
-        reputationRequired: 300,
-        reputationReward: 300,
-        goldReward: 200,
-        unlockConditions: ['ironhold_1']
+        name: 'The Archer Threat',
+        description: 'Goblin archers are harassing travelers on the road.',
+        zoneId: 'millbrook_zone_3',
+        reputationReward: 100,
+        goldReward: 75,
+        unlockConditions: ['millbrook_2']
     },
     {
         id: 'millbrook_4',
         cityId: 'millbrook',
-        name: 'The Ancient Grove',
-        description: 'Something dark has awakened in the sacred grove.',
-        zoneId: 'ancient_grove',
-        reputationRequired: 600,
-        reputationReward: 350,
-        goldReward: 300,
-        unlockConditions: ['ironhold_2', 'ravenshire_1']
-    },
-
-    // Ironhold Quests
-    {
-        id: 'ironhold_1',
-        cityId: 'ironhold',
-        name: 'Clear the Mine Shaft',
-        description: 'Creatures have infested the lower mine levels.',
-        zoneId: 'crystal_mines',
-        reputationRequired: 0,
-        reputationReward: 200,
-        goldReward: 150,
-        unlockConditions: ['millbrook_1']
-    },
-    {
-        id: 'ironhold_2',
-        cityId: 'ironhold',
-        name: 'The Spider Nest',
-        description: 'Giant spiders block access to valuable ore deposits.',
-        zoneId: 'webbed_caverns',
-        reputationRequired: 200,
-        reputationReward: 300,
-        goldReward: 220,
-        unlockConditions: ['millbrook_2']
-    },
-    {
-        id: 'ironhold_3',
-        cityId: 'ironhold',
-        name: 'Troll Trouble',
-        description: 'A cave troll clan threatens the miners.',
-        zoneId: 'troll_warrens',
-        reputationRequired: 500,
-        reputationReward: 400,
-        goldReward: 350,
-        unlockConditions: ['ravenshire_2']
-    },
-    {
-        id: 'ironhold_4',
-        cityId: 'ironhold',
-        name: 'The Deep Tunnels',
-        description: 'Ancient horrors lurk in tunnels beneath the mountain.',
-        zoneId: 'abyssal_depths',
-        reputationRequired: 900,
-        reputationReward: 500,
-        goldReward: 500,
-        unlockConditions: ['millbrook_4', 'ravenshire_3']
-    },
-
-    // Ravenshire Quests
-    {
-        id: 'ravenshire_1',
-        cityId: 'ravenshire',
-        name: 'The Haunted Cemetery',
-        description: 'The dead no longer rest in peace.',
-        zoneId: 'restless_cemetery',
-        reputationRequired: 0,
-        reputationReward: 250,
-        goldReward: 180,
-        unlockConditions: ['millbrook_2', 'ironhold_1']
-    },
-    {
-        id: 'ravenshire_2',
-        cityId: 'ravenshire',
-        name: 'Cursed Manor',
-        description: 'Lord Blackwood\'s manor has become a den of evil.',
-        zoneId: 'blackwood_manor',
-        reputationRequired: 250,
-        reputationReward: 350,
-        goldReward: 280,
+        name: 'Warg Riders',
+        description: 'Goblins riding wargs have been attacking caravans.',
+        zoneId: 'millbrook_zone_4',
+        reputationReward: 150,
+        goldReward: 100,
         unlockConditions: ['millbrook_3']
     },
     {
-        id: 'ravenshire_3',
-        cityId: 'ravenshire',
-        name: 'The Necropolis',
-        description: 'An ancient burial ground where dark magic festers.',
-        zoneId: 'forgotten_necropolis',
-        reputationRequired: 700,
-        reputationReward: 500,
-        goldReward: 450,
-        unlockConditions: ['ironhold_3']
+        id: 'millbrook_5',
+        cityId: 'millbrook',
+        name: 'The Shaman Circle',
+        description: 'Goblin shamans are performing dark rituals in the woods.',
+        zoneId: 'millbrook_zone_5',
+        reputationReward: 200,
+        goldReward: 150,
+        unlockConditions: ['millbrook_4']
     },
     {
-        id: 'ravenshire_4',
-        cityId: 'ravenshire',
-        name: 'The Lich\'s Tower',
-        description: 'End the undead menace at its source.',
-        zoneId: 'tower_of_shadows',
-        reputationRequired: 1200,
+        id: 'millbrook_6',
+        cityId: 'millbrook',
+        name: 'Berserker Assault',
+        description: 'Crazed goblin berserkers are launching attacks on the village.',
+        zoneId: 'millbrook_zone_6',
+        reputationReward: 275,
+        goldReward: 200,
+        unlockConditions: ['millbrook_5']
+    },
+    {
+        id: 'millbrook_7',
+        cityId: 'millbrook',
+        name: 'The War Camp',
+        description: 'A goblin war camp has been established nearby. It must be destroyed.',
+        zoneId: 'millbrook_zone_7',
+        reputationReward: 350,
+        goldReward: 275,
+        unlockConditions: ['millbrook_6']
+    },
+    {
+        id: 'millbrook_8',
+        cityId: 'millbrook',
+        name: 'Captain\'s Guard',
+        description: 'A goblin captain commands a formidable guard. Take them out.',
+        zoneId: 'millbrook_zone_8',
+        reputationReward: 450,
+        goldReward: 375,
+        unlockConditions: ['millbrook_7']
+    },
+    {
+        id: 'millbrook_9',
+        cityId: 'millbrook',
+        name: 'The Warlord\'s Elite',
+        description: 'The goblin warlord\'s elite troops are preparing a major assault.',
+        zoneId: 'millbrook_zone_9',
         reputationReward: 600,
-        goldReward: 600,
-        unlockConditions: ['ironhold_4']
+        goldReward: 500,
+        unlockConditions: ['millbrook_8']
+    },
+    {
+        id: 'millbrook_10',
+        cityId: 'millbrook',
+        name: 'Slay the Goblin King',
+        description: 'End the goblin threat once and for all. Storm the king\'s stronghold.',
+        zoneId: 'millbrook_zone_10',
+        reputationReward: 1000,
+        goldReward: 750,
+        unlockConditions: ['millbrook_9']
     }
 ];
 
 // ------------------------------------------------------------
 // ZONES (Combat areas tied to quests)
+// enemyLevel scales enemy stats: hp = baseHp * (1 + 0.25 * (level - 1))
 // ------------------------------------------------------------
 const ZONES = [
-    // Millbrook Zones (Forest themed)
+    // Wilderness - easy farming zone
     {
-        id: 'whispering_woods',
-        name: 'Whispering Woods',
+        id: 'wilderness_plains',
+        name: 'Wilderness Plains',
         tier: 1,
-        enemies: [
-            { name: 'Goblin Scout', baseHp: 35, xpDrop: [8, 12] },
-            { name: 'Goblin Warrior', baseHp: 45, xpDrop: [10, 15] },
-            { name: 'Goblin Shaman', baseHp: 30, xpDrop: [12, 18] }
-        ],
-        boss: { name: 'Goblin Chieftain', baseHp: 180, xpDrop: [60, 90] }
-    },
-    {
-        id: 'moonhowl_den',
-        name: 'Moonhowl Den',
-        tier: 1,
-        enemies: [
-            { name: 'Grey Wolf', baseHp: 50, xpDrop: [10, 15] },
-            { name: 'Dire Wolf', baseHp: 65, xpDrop: [14, 20] },
-            { name: 'Shadow Wolf', baseHp: 55, xpDrop: [12, 18] }
-        ],
-        boss: { name: 'Alpha Werewolf', baseHp: 220, xpDrop: [80, 120] }
-    },
-    {
-        id: 'thornback_camp',
-        name: 'Thornback Camp',
-        tier: 2,
-        enemies: [
-            { name: 'Bandit Thug', baseHp: 70, xpDrop: [18, 25] },
-            { name: 'Bandit Archer', baseHp: 55, xpDrop: [20, 28] },
-            { name: 'Bandit Enforcer', baseHp: 90, xpDrop: [22, 32] }
-        ],
-        boss: { name: 'Bandit Lord', baseHp: 300, xpDrop: [100, 150] }
-    },
-    {
-        id: 'ancient_grove',
-        name: 'Ancient Grove',
-        tier: 3,
-        enemies: [
-            { name: 'Corrupted Treant', baseHp: 120, xpDrop: [35, 50] },
-            { name: 'Blight Sprite', baseHp: 80, xpDrop: [30, 45] },
-            { name: 'Fungal Horror', baseHp: 100, xpDrop: [32, 48] }
-        ],
-        boss: { name: 'Elder Corruption', baseHp: 450, xpDrop: [180, 250] }
+        enemyLevel: 1,
+        enemies: ['wild_rat', 'wild_boar'],
+        boss: { type: 'wild_boar', level: 2 }
     },
 
-    // Ironhold Zones (Cave/Mine themed)
+    // Millbrook zones (1-10)
     {
-        id: 'crystal_mines',
-        name: 'Crystal Mines',
+        id: 'millbrook_zone_1',
+        name: 'Farm Outskirts',
         tier: 1,
-        enemies: [
-            { name: 'Cave Bat', baseHp: 40, xpDrop: [10, 14] },
-            { name: 'Mine Crawler', baseHp: 55, xpDrop: [12, 18] },
-            { name: 'Crystal Beetle', baseHp: 60, xpDrop: [14, 20] }
-        ],
-        boss: { name: 'Gem Guardian', baseHp: 200, xpDrop: [70, 100] }
+        enemyLevel: 1,
+        enemies: ['goblin_runt', 'goblin_scout'],
+        boss: { type: 'goblin_scout', level: 2 }
     },
     {
-        id: 'webbed_caverns',
-        name: 'Webbed Caverns',
+        id: 'millbrook_zone_2',
+        name: 'Wheat Fields',
+        tier: 1,
+        enemyLevel: 2,
+        enemies: ['goblin_scout', 'goblin_warrior'],
+        boss: { type: 'goblin_warrior', level: 2 }
+    },
+    {
+        id: 'millbrook_zone_3',
+        name: 'Forest Road',
+        tier: 1,
+        enemyLevel: 2,
+        enemies: ['goblin_scout', 'goblin_archer', 'goblin_warrior'],
+        boss: { type: 'goblin_archer', level: 3 }
+    },
+    {
+        id: 'millbrook_zone_4',
+        name: 'Warg Den',
         tier: 2,
-        enemies: [
-            { name: 'Giant Spider', baseHp: 75, xpDrop: [20, 28] },
-            { name: 'Venomous Lurker', baseHp: 65, xpDrop: [22, 30] },
-            { name: 'Brood Mother', baseHp: 90, xpDrop: [25, 35] }
-        ],
-        boss: { name: 'Spider Queen', baseHp: 320, xpDrop: [120, 170] }
+        enemyLevel: 3,
+        enemies: ['warg', 'goblin_marauder'],
+        boss: { type: 'warg_alpha', level: 3 }
     },
     {
-        id: 'troll_warrens',
-        name: 'Troll Warrens',
+        id: 'millbrook_zone_5',
+        name: 'Dark Grove',
+        tier: 2,
+        enemyLevel: 3,
+        enemies: ['goblin_shaman', 'goblin_warrior', 'goblin_archer'],
+        boss: { type: 'goblin_shaman', level: 4 }
+    },
+    {
+        id: 'millbrook_zone_6',
+        name: 'Ravaged Farms',
+        tier: 2,
+        enemyLevel: 4,
+        enemies: ['goblin_berserker', 'goblin_enforcer', 'goblin_marauder'],
+        boss: { type: 'goblin_berserker', level: 4 }
+    },
+    {
+        id: 'millbrook_zone_7',
+        name: 'Goblin War Camp',
         tier: 3,
-        enemies: [
-            { name: 'Cave Troll', baseHp: 130, xpDrop: [38, 55] },
-            { name: 'Rock Troll', baseHp: 150, xpDrop: [42, 60] },
-            { name: 'Troll Berserker', baseHp: 110, xpDrop: [40, 58] }
-        ],
-        boss: { name: 'Troll King', baseHp: 500, xpDrop: [200, 280] }
+        enemyLevel: 4,
+        enemies: ['goblin_enforcer', 'goblin_berserker', 'warg'],
+        boss: { type: 'goblin_captain', level: 4 }
     },
     {
-        id: 'abyssal_depths',
-        name: 'Abyssal Depths',
-        tier: 4,
-        enemies: [
-            { name: 'Deep Dweller', baseHp: 160, xpDrop: [55, 80] },
-            { name: 'Void Crawler', baseHp: 140, xpDrop: [50, 75] },
-            { name: 'Abyssal Horror', baseHp: 180, xpDrop: [60, 90] }
-        ],
-        boss: { name: 'The Nameless One', baseHp: 700, xpDrop: [300, 420] }
-    },
-
-    // Ravenshire Zones (Undead/Dark themed)
-    {
-        id: 'restless_cemetery',
-        name: 'Restless Cemetery',
-        tier: 2,
-        enemies: [
-            { name: 'Shambling Zombie', baseHp: 80, xpDrop: [18, 26] },
-            { name: 'Skeletal Warrior', baseHp: 60, xpDrop: [16, 24] },
-            { name: 'Restless Spirit', baseHp: 50, xpDrop: [20, 28] }
-        ],
-        boss: { name: 'Grave Warden', baseHp: 280, xpDrop: [100, 140] }
-    },
-    {
-        id: 'blackwood_manor',
-        name: 'Blackwood Manor',
-        tier: 2,
-        enemies: [
-            { name: 'Possessed Servant', baseHp: 70, xpDrop: [22, 32] },
-            { name: 'Wailing Banshee', baseHp: 55, xpDrop: [25, 36] },
-            { name: 'Shadow Wraith', baseHp: 65, xpDrop: [24, 34] }
-        ],
-        boss: { name: 'Lord Blackwood', baseHp: 350, xpDrop: [140, 200] }
-    },
-    {
-        id: 'forgotten_necropolis',
-        name: 'Forgotten Necropolis',
+        id: 'millbrook_zone_8',
+        name: 'Captain\'s Stronghold',
         tier: 3,
-        enemies: [
-            { name: 'Bone Golem', baseHp: 140, xpDrop: [45, 65] },
-            { name: 'Death Knight', baseHp: 120, xpDrop: [50, 70] },
-            { name: 'Spectral Mage', baseHp: 90, xpDrop: [48, 68] }
-        ],
-        boss: { name: 'Necromancer Prime', baseHp: 480, xpDrop: [220, 300] }
+        enemyLevel: 5,
+        enemies: ['goblin_captain', 'goblin_enforcer', 'warg_alpha'],
+        boss: { type: 'goblin_captain', level: 5 }
     },
     {
-        id: 'tower_of_shadows',
-        name: 'Tower of Shadows',
+        id: 'millbrook_zone_9',
+        name: 'Warlord\'s Domain',
+        tier: 3,
+        enemyLevel: 5,
+        enemies: ['goblin_enforcer', 'goblin_berserker', 'goblin_captain'],
+        boss: { type: 'goblin_warlord', level: 5 }
+    },
+    {
+        id: 'millbrook_zone_10',
+        name: 'Goblin Throne',
         tier: 4,
-        enemies: [
-            { name: 'Lich Acolyte', baseHp: 150, xpDrop: [60, 85] },
-            { name: 'Soul Devourer', baseHp: 170, xpDrop: [65, 95] },
-            { name: 'Shadow Demon', baseHp: 160, xpDrop: [62, 90] }
-        ],
-        boss: { name: 'Lich Lord Malachar', baseHp: 800, xpDrop: [400, 550] }
+        enemyLevel: 6,
+        enemies: ['goblin_warlord', 'goblin_chieftain', 'warg_alpha'],
+        boss: { type: 'goblin_king', level: 6 }
     }
 ];
 
