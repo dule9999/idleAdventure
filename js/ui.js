@@ -69,8 +69,7 @@ function renderWorldMap() {
     container.innerHTML = '';
 
     CITIES.forEach(city => {
-        const rep = gameState.cityReputation[city.id] || 0;
-        const maxRep = city.maxReputation;
+        const totalRep = gameState.cityReputation[city.id] || 0;
         const availableQuests = getAvailableQuestsForCity(city.id);
         const pendingCount = availableQuests.filter(q =>
             gameState.pendingRewards.includes(q.id)
@@ -80,14 +79,28 @@ function renderWorldMap() {
         card.className = 'city-card';
 
         // Only show reputation for cities that have it
-        const repSection = maxRep > 0 ? `
-            <div class="city-rep">
-                <span>Reputation: ${rep} / ${maxRep}</span>
-                <div class="rep-bar-container">
-                    <div class="rep-bar" style="width: ${Math.min(100, (rep / maxRep) * 100)}%"></div>
-                </div>
-            </div>
-        ` : '';
+        let repSection = '';
+        if (city.hasReputation) {
+            const progress = getReputationProgress(totalRep);
+            if (progress.isMaxTier) {
+                repSection = `
+                    <div class="city-rep">
+                        <span class="rep-tier">${progress.tierName}</span>
+                    </div>
+                `;
+            } else {
+                const barPercent = Math.min(100, (progress.current / progress.required) * 100);
+                repSection = `
+                    <div class="city-rep">
+                        <span class="rep-tier">${progress.tierName}</span>
+                        <span class="rep-progress">${progress.current} / ${progress.required}</span>
+                        <div class="rep-bar-container">
+                            <div class="rep-bar" style="width: ${barPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
 
         const buttonText = city.id === 'wilderness' ? 'Explore' : 'Visit Job Board';
 

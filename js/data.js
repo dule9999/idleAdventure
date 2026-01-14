@@ -35,6 +35,18 @@ const INGREDIENT_TIERS = [
 const INGREDIENT_TYPES = ['Fangs', 'Hide', 'Bones', 'Essence', 'Claws'];
 
 // ------------------------------------------------------------
+// REPUTATION TIERS
+// ------------------------------------------------------------
+const REPUTATION_TIERS = [
+    { id: 'unknown', name: 'Unknown', threshold: 0, required: 100 },
+    { id: 'neutral', name: 'Neutral', threshold: 100, required: 500 },
+    { id: 'friendly', name: 'Friendly', threshold: 600, required: 1000 },
+    { id: 'respected', name: 'Respected', threshold: 1600, required: 2500 },
+    { id: 'honored', name: 'Honored', threshold: 4100, required: 5000 },
+    { id: 'exalted', name: 'Exalted', threshold: 9100, required: 0 }  // Max tier
+];
+
+// ------------------------------------------------------------
 // CITIES & SETTLEMENTS
 // ------------------------------------------------------------
 const CITIES = [
@@ -42,13 +54,13 @@ const CITIES = [
         id: 'wilderness',
         name: 'Wilderness',
         description: 'The untamed lands outside civilization. A place to hunt and gather resources.',
-        maxReputation: 0
+        hasReputation: false
     },
     {
         id: 'millbrook',
         name: 'Millbrook',
         description: 'A peaceful farming village besieged by goblin raiders from the nearby woods.',
-        maxReputation: 5000
+        hasReputation: true
     }
 ];
 
@@ -105,13 +117,14 @@ const QUESTS = [
     },
 
     // Millbrook - 10 sequential goblin quests
+    // Reputation: 70 base, +20% each quest (total: 1817)
     {
         id: 'millbrook_1',
         cityId: 'millbrook',
         name: 'Goblin Scouts',
         description: 'Goblin scouts have been spotted near the farms. Drive them off.',
         zoneId: 'millbrook_zone_1',
-        reputationReward: 50,
+        reputationReward: 70,
         goldReward: 30,
         unlockConditions: []
     },
@@ -121,7 +134,7 @@ const QUESTS = [
         name: 'Raiding Party',
         description: 'A small raiding party is targeting the outer farms.',
         zoneId: 'millbrook_zone_2',
-        reputationReward: 75,
+        reputationReward: 84,
         goldReward: 50,
         unlockConditions: ['millbrook_1']
     },
@@ -131,7 +144,7 @@ const QUESTS = [
         name: 'The Archer Threat',
         description: 'Goblin archers are harassing travelers on the road.',
         zoneId: 'millbrook_zone_3',
-        reputationReward: 100,
+        reputationReward: 101,
         goldReward: 75,
         unlockConditions: ['millbrook_2']
     },
@@ -141,7 +154,7 @@ const QUESTS = [
         name: 'Warg Riders',
         description: 'Goblins riding wargs have been attacking caravans.',
         zoneId: 'millbrook_zone_4',
-        reputationReward: 150,
+        reputationReward: 121,
         goldReward: 100,
         unlockConditions: ['millbrook_3']
     },
@@ -151,7 +164,7 @@ const QUESTS = [
         name: 'The Shaman Circle',
         description: 'Goblin shamans are performing dark rituals in the woods.',
         zoneId: 'millbrook_zone_5',
-        reputationReward: 200,
+        reputationReward: 145,
         goldReward: 150,
         unlockConditions: ['millbrook_4']
     },
@@ -161,7 +174,7 @@ const QUESTS = [
         name: 'Berserker Assault',
         description: 'Crazed goblin berserkers are launching attacks on the village.',
         zoneId: 'millbrook_zone_6',
-        reputationReward: 275,
+        reputationReward: 174,
         goldReward: 200,
         unlockConditions: ['millbrook_5']
     },
@@ -171,7 +184,7 @@ const QUESTS = [
         name: 'The War Camp',
         description: 'A goblin war camp has been established nearby. It must be destroyed.',
         zoneId: 'millbrook_zone_7',
-        reputationReward: 350,
+        reputationReward: 209,
         goldReward: 275,
         unlockConditions: ['millbrook_6']
     },
@@ -181,7 +194,7 @@ const QUESTS = [
         name: 'Captain\'s Guard',
         description: 'A goblin captain commands a formidable guard. Take them out.',
         zoneId: 'millbrook_zone_8',
-        reputationReward: 450,
+        reputationReward: 251,
         goldReward: 375,
         unlockConditions: ['millbrook_7']
     },
@@ -191,7 +204,7 @@ const QUESTS = [
         name: 'The Warlord\'s Elite',
         description: 'The goblin warlord\'s elite troops are preparing a major assault.',
         zoneId: 'millbrook_zone_9',
-        reputationReward: 600,
+        reputationReward: 301,
         goldReward: 500,
         unlockConditions: ['millbrook_8']
     },
@@ -201,7 +214,7 @@ const QUESTS = [
         name: 'Slay the Goblin King',
         description: 'End the goblin threat once and for all. Storm the king\'s stronghold.',
         zoneId: 'millbrook_zone_10',
-        reputationReward: 1000,
+        reputationReward: 361,
         goldReward: 750,
         unlockConditions: ['millbrook_9']
     }

@@ -124,8 +124,36 @@
 }
 
 .city-rep {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
     font-size: 0.85rem;
+}
+
+.rep-tier {
+    color: var(--accent-gold);
+    font-weight: 600;
+    font-family: 'Cinzel', serif;
+}
+
+.rep-progress {
     color: var(--text-secondary);
+}
+
+.rep-bar-container {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-dark);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.rep-bar {
+    height: 100%;
+    background: var(--accent-gold);
+    border-radius: 3px;
+    transition: width 0.3s ease;
 }
 
 .city-quests {

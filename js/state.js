@@ -149,15 +149,42 @@ function getAvailableQuestsForCity(cityId) {
     );
 }
 
-function getCityMaxReputation(cityId) {
-    const city = CITIES.find(c => c.id === cityId);
-    return city ? city.maxReputation : 0;
+function getReputationTier(totalRep) {
+    // Find the highest tier the player has reached
+    let currentTier = REPUTATION_TIERS[0];
+    for (let i = REPUTATION_TIERS.length - 1; i >= 0; i--) {
+        if (totalRep >= REPUTATION_TIERS[i].threshold) {
+            currentTier = REPUTATION_TIERS[i];
+            break;
+        }
+    }
+    return currentTier;
+}
+
+function getReputationProgress(totalRep) {
+    const tier = getReputationTier(totalRep);
+    const tierIndex = REPUTATION_TIERS.findIndex(t => t.id === tier.id);
+    const isMaxTier = tierIndex === REPUTATION_TIERS.length - 1;
+
+    // Progress within current tier
+    const progressInTier = totalRep - tier.threshold;
+    const requiredForNext = tier.required;
+
+    return {
+        tierName: tier.name,
+        tierId: tier.id,
+        current: progressInTier,
+        required: requiredForNext,
+        isMaxTier: isMaxTier,
+        totalRep: totalRep
+    };
 }
 
 function canCommissionHero(cityId) {
+    // TODO: Update this when hero commissioning is implemented with tiers
     const rep = gameState.cityReputation[cityId] || 0;
-    const maxRep = getCityMaxReputation(cityId);
-    return rep >= maxRep && !gameState.commissionedHeroes[cityId];
+    const progress = getReputationProgress(rep);
+    return progress.tierId === 'exalted' && !gameState.commissionedHeroes[cityId];
 }
 
 function getPassiveIncome() {
