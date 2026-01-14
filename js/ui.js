@@ -426,6 +426,9 @@ function renderBaseTab() {
     buildingsGrid.className = 'buildings-grid';
 
     BUILDINGS.forEach(building => {
+        // Skip tent - it's just flavor, not interactive
+        if (building.id === 'tent') return;
+
         const isUnlocked = gameState.unlockedBuildings.includes(building.id);
         const isBuilt = gameState.builtBuildings.includes(building.id);
         const canAfford = gameState.hero.gold >= building.cost;
@@ -443,9 +446,7 @@ function renderBaseTab() {
                 <div class="building-name">${building.name}</div>
                 <div class="building-description">${building.description}</div>
                 ${isBuilt ? `
-                    <button class="building-btn enter-btn" data-building="${building.id}" ${building.id === 'tent' ? 'disabled' : ''}>
-                        ${building.id === 'tent' ? 'Home' : 'Enter'}
-                    </button>
+                    <button class="building-btn enter-btn" data-building="${building.id}">Enter</button>
                 ` : `
                     <button class="building-btn build-btn" data-building="${building.id}" ${!canAfford ? 'disabled' : ''}>
                         Build (${building.cost}g)

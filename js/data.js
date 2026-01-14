@@ -373,15 +373,14 @@ const SHOP_TIERS = {
 // BUILDINGS (Unlock at certain levels)
 // ------------------------------------------------------------
 const BUILDINGS = [
-    { id: 'tent', name: 'Tent & Campfire', unlockLevel: 1, cost: 0, description: 'Your humble beginning.', built: true },
     { id: 'forge', name: 'Forge', unlockLevel: 2, cost: 50, description: 'Craft weapons and armor.' },
-    { id: 'alchemy_lab', name: 'Alchemy Lab', unlockLevel: 5, cost: 500, description: 'Brew potions for combat.' },
-    { id: 'enchanting_table', name: 'Enchanting Table', unlockLevel: 8, cost: 800, description: 'Imbue items with magic.' },
-    { id: 'librarium', name: 'Librarium', unlockLevel: 6, cost: 400, description: 'Store lore about locations and monsters.' },
-    { id: 'temple', name: 'Temple', unlockLevel: 10, cost: 1200, description: 'Perform rituals for temporary buffs.' },
-    { id: 'skill_shrine', name: 'Shrine of Skills', unlockLevel: 7, cost: 600, description: 'Learn combat skills and magic.' },
-    { id: 'recruitment_center', name: 'Recruitment Center', unlockLevel: 4, cost: 350, description: 'Hire heroes for your guild.' },
-    { id: 'training_grounds', name: 'Training Grounds', unlockLevel: 4, cost: 400, description: 'Train and level up guild heroes.' }
+    { id: 'alchemy_lab', name: 'Alchemy Lab', unlockLevel: 5, cost: 100, description: 'Brew potions for combat.' },
+    { id: 'librarium', name: 'Librarium', unlockLevel: 8, cost: 250, description: 'Store lore about locations and monsters.' },
+    { id: 'skill_shrine', name: 'Shrine of Skills', unlockLevel: 10, cost: 500, description: 'Learn combat skills and magic.' },
+    { id: 'enchanting_table', name: 'Enchanting Table', unlockLevel: 20, cost: 2000, description: 'Imbue items with magic.' },
+    { id: 'recruitment_center', name: 'Recruitment Center', unlockLevel: 30, cost: 5000, description: 'Hire heroes for your guild.' },
+    { id: 'training_grounds', name: 'Training Grounds', unlockLevel: 40, cost: 10000, description: 'Train and level up guild heroes.' },
+    { id: 'temple', name: 'Temple', unlockLevel: 50, cost: 50000, description: 'Perform rituals for temporary buffs.' },
 ];
 
 // ------------------------------------------------------------
