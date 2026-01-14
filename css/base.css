@@ -1,0 +1,144 @@
+/* ============================================ */
+/* RESET & BASE STYLES */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+#game {
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+}
+
+/* ============================================ */
+/* SCREEN MANAGEMENT */
+/* ============================================ */
+.screen {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================ */
+/* COMMON LAYOUT */
+/* ============================================ */
+.screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.screen-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+}
+
+.header-resources {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 1rem;
+}
+
+.header-resources span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.resource-icon {
+    color: var(--accent-gold);
+}
+
+/* Dashboard Navigation */
+.dashboard-nav {
+    display: flex;
+    gap: 8px;
+    background: var(--bg-panel);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: var(--bg-panel-light);
+    color: var(--text-primary);
+}
+
+.nav-btn.active {
+    background: var(--bg-panel-light);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ============================================ */
+/* SCROLLBARS */
+/* ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
+}

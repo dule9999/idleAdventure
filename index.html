@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guild of Thornmere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/screens.css">
+</head>
+<body>
+    <div id="game">
+
+        <!-- ============================================ -->
+        <!-- SCREEN: INTRO -->
+        <!-- ============================================ -->
+        <div id="screen-intro" class="screen">
+            <div id="intro-content"></div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SCREEN: DASHBOARD -->
+        <!-- ============================================ -->
+        <div id="screen-dashboard" class="screen">
+            <header class="screen-header">
+                <h1>Guild of Thornmere</h1>
+                <div class="header-resources">
+                    <span id="dash-level">Level 1</span>
+                    <span><span class="resource-icon">&#9733;</span> <span id="dash-gold">0 Gold</span></span>
+                </div>
+            </header>
+
+            <nav class="dashboard-nav">
+                <button class="nav-btn active" data-tab="world">World</button>
+                <button class="nav-btn" data-tab="character">Character</button>
+                <button class="nav-btn" data-tab="base">Base</button>
+                <button class="nav-btn" data-tab="guild">Guild</button>
+                <button class="nav-btn" data-tab="shop">Shop</button>
+            </nav>
+
+            <!-- TAB: WORLD MAP -->
+            <div id="tab-world" class="tab-content active">
+                <div id="world-map"></div>
+            </div>
+
+            <!-- TAB: CHARACTER -->
+            <div id="tab-character" class="tab-content">
+                <div class="character-grid">
+                    <section class="char-panel">
+                        <h2 id="char-level">Lv. 1</h2>
+                        <div class="xp-bar-container">
+                            <div class="xp-bar" id="char-xp-bar"></div>
+                            <span id="char-xp-text">0 / 100 XP</span>
+                        </div>
+
+                        <h3>Base Stats <span id="char-stat-points" class="stat-points-badge">(0 points)</span></h3>
+                        <div class="stat-row">
+                            <span class="stat-label">STR</span>
+                            <span class="stat-value" id="char-str">5</span>
+                            <button class="stat-btn" data-stat="str">+</button>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">VIT</span>
+                            <span class="stat-value" id="char-vit">5</span>
+                            <button class="stat-btn" data-stat="vit">+</button>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">AGI</span>
+                            <span class="stat-value" id="char-agi">5</span>
+                            <button class="stat-btn" data-stat="agi">+</button>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">LUK</span>
+                            <span class="stat-value" id="char-luk">5</span>
+                            <button class="stat-btn" data-stat="luk">+</button>
+                        </div>
+
+                        <div class="derived-stats">
+                            <div class="derived-row">
+                                <span>Damage</span>
+                                <span id="char-damage">10</span>
+                            </div>
+                            <div class="derived-row">
+                                <span>Max HP</span>
+                                <span id="char-maxhp">100</span>
+                            </div>
+                            <div class="derived-row">
+                                <span>Attack Speed</span>
+                                <span id="char-speed">1.0/s</span>
+                            </div>
+                            <div class="derived-row">
+                                <span>Crit Chance</span>
+                                <span id="char-crit">5%</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="char-panel">
+                        <h2>Equipment</h2>
+                        <div class="equip-slot">
+                            <span class="equip-label">Weapon</span>
+                            <span class="equip-value" id="char-weapon">Rusty Sword (+2 DMG)</span>
+                        </div>
+                        <div class="equip-slot">
+                            <span class="equip-label">Armor</span>
+                            <span class="equip-value" id="char-armor">Cloth Shirt (+10 HP)</span>
+                        </div>
+                        <div class="equip-slot">
+                            <span class="equip-label">Accessory</span>
+                            <span class="equip-value" id="char-accessory">None</span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- TAB: BASE -->
+            <div id="tab-base" class="tab-content">
+                <div id="base-content"></div>
+            </div>
+
+            <!-- TAB: GUILD -->
+            <div id="tab-guild" class="tab-content">
+                <div id="guild-content"></div>
+            </div>
+
+            <!-- TAB: SHOP -->
+            <div id="tab-shop" class="tab-content">
+                <div id="shop-grid"></div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SCREEN: JOB BOARD (Modal) -->
+        <!-- ============================================ -->
+        <div id="screen-job-board" class="screen">
+            <div id="job-board-content"></div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SCREEN: BATTLE -->
+        <!-- ============================================ -->
+        <div id="screen-battle" class="screen">
+            <header class="battle-header">
+                <button id="btn-retreat" class="retreat-btn">Retreat</button>
+                <div class="stage-info">
+                    <span id="battle-zone">Whispering Woods</span>
+                    <span id="battle-stage">Stage 1</span>
+                </div>
+                <div class="wave-info">
+                    <span id="wave-display">Enemy 1 / 3</span>
+                </div>
+                <div class="speed-controls">
+                    <button class="speed-btn active" data-speed="1">1x</button>
+                    <button class="speed-btn" data-speed="2">2x</button>
+                    <button class="speed-btn" data-speed="4">4x</button>
+                </div>
+            </header>
+
+            <main id="battle-area">
+                <section id="enemy-section">
+                    <div id="enemy-name">Goblin</div>
+                    <div class="health-bar-container enemy-health">
+                        <div id="enemy-health-bar" class="health-bar"></div>
+                        <span id="enemy-health-text">50 / 50</span>
+                    </div>
+                    <button id="attack-button">ATTACK</button>
+                </section>
+
+                <section id="hero-section">
+                    <div id="hero-name">Hero <span id="hero-level">Lv. 1</span></div>
+                    <div class="health-bar-container hero-health">
+                        <div id="hero-health-bar" class="health-bar"></div>
+                        <span id="hero-health-text">100 / 100</span>
+                    </div>
+                </section>
+            </main>
+
+            <div id="combat-log" class="collapsed">
+                <div id="log-header">
+                    <span>Combat Log</span>
+                    <span id="log-toggle-icon">+</span>
+                </div>
+                <div id="log-content"></div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SCREEN: VICTORY -->
+        <!-- ============================================ -->
+        <div id="screen-victory" class="screen">
+            <div class="victory-content">
+                <h1 id="victory-title">Stage Complete!</h1>
+                <div id="victory-rewards">
+                    <div class="reward-row" style="display: none;">
+                        <span>Gold Earned</span>
+                        <span id="reward-gold">+0</span>
+                    </div>
+                    <div class="reward-row">
+                        <span>XP Earned</span>
+                        <span id="reward-xp">+100</span>
+                    </div>
+                    <div class="reward-row">
+                        <span>Ingredients</span>
+                        <span id="reward-ingredients">-</span>
+                    </div>
+                </div>
+                <button id="btn-continue" class="continue-btn">Continue</button>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SCREEN: DEFEAT -->
+        <!-- ============================================ -->
+        <div id="screen-defeat" class="screen">
+            <div class="defeat-content">
+                <h1>Defeated!</h1>
+                <p class="defeat-message">You have fallen in battle...</p>
+                <div id="defeat-rewards">
+                    <div class="reward-row" style="display: none;">
+                        <span>Gold Salvaged</span>
+                        <span id="defeat-gold">+0</span>
+                    </div>
+                    <div class="reward-row">
+                        <span>XP Salvaged</span>
+                        <span id="defeat-xp">+50</span>
+                    </div>
+                </div>
+                <button id="btn-defeat-continue" class="continue-btn">Return</button>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SCREEN: FORGE -->
+        <!-- ============================================ -->
+        <div id="screen-forge" class="screen">
+            <div id="forge-content"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files (order matters!) -->
+    <script src="js/data.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/combat.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

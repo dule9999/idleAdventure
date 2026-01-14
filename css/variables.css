@@ -1,0 +1,26 @@
+/* ============================================ */
+/* COLOR PALETTE & CSS VARIABLES */
+/* ============================================ */
+:root {
+    --bg-dark: #0d0d14;
+    --bg-panel: #1a1a2e;
+    --bg-panel-light: #252540;
+    --bg-panel-hover: #2d2d4a;
+    --accent-gold: #eab308;
+    --accent-gold-dim: #a37e06;
+    --health-green: #22c55e;
+    --health-red: #ef4444;
+    --mana-blue: #3b82f6;
+    --text-primary: #f0f0f0;
+    --text-secondary: #888;
+    --text-dim: #555;
+    --border-color: #333355;
+    --success: #22c55e;
+    --warning: #f59e0b;
+
+    /* Ingredient tier colors */
+    --tier-common: #9ca3af;
+    --tier-rare: #3b82f6;
+    --tier-epic: #a855f7;
+    --tier-legendary: #f97316;
+}

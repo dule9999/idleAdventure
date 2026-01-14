@@ -1,0 +1,1058 @@
+/* ============================================ */
+/* INTRO SCREEN */
+/* ============================================ */
+#screen-intro {
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+#intro-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--accent-gold);
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 600px;
+    text-align: center;
+}
+
+.intro-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    color: var(--accent-gold);
+    margin-bottom: 24px;
+    text-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
+}
+
+.intro-text {
+    margin-bottom: 32px;
+}
+
+.intro-text p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 16px;
+    font-size: 1rem;
+}
+
+.intro-text p:last-child {
+    margin-bottom: 0;
+}
+
+.start-btn {
+    padding: 16px 48px;
+    font-size: 1.2rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--accent-gold) 0%, var(--accent-gold-dim) 100%);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(234, 179, 8, 0.5);
+}
+
+/* ============================================ */
+/* CHARACTER TAB */
+/* ============================================ */
+.character-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ============================================ */
+/* WORLD MAP TAB */
+/* ============================================ */
+#world-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.city-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s;
+}
+
+.city-card:hover {
+    border-color: var(--accent-gold-dim);
+}
+
+.city-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.city-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--accent-gold);
+}
+
+.quest-notification {
+    background: var(--health-green);
+    color: var(--bg-dark);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.city-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.city-rep {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.city-quests {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+.city-btn {
+    padding: 12px;
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.city-btn:hover {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+/* ============================================ */
+/* JOB BOARD SCREEN (Modal overlay) */
+/* ============================================ */
+#screen-job-board {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    padding: 20px;
+}
+
+#screen-job-board.active {
+    display: flex;
+}
+
+#job-board-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.job-board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background: var(--bg-panel);
+}
+
+.job-board-header h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent-gold);
+    font-size: 1.4rem;
+}
+
+.quest-list {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.no-quests {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px;
+}
+
+.quest-card {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.quest-card.complete {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.quest-card.can-collect {
+    border-color: var(--accent-gold);
+    background: rgba(234, 179, 8, 0.1);
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(234, 179, 8, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.5); }
+}
+
+.quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.quest-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.quest-reward {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.quest-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.quest-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.quest-stages {
+    display: flex;
+    gap: 4px;
+}
+
+.quest-stage {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.quest-stage.done {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--bg-dark);
+}
+
+.quest-stage.boss {
+    color: var(--accent-gold);
+}
+
+.quest-stage.boss.done {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+.quest-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.fight-btn, .collect-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.fight-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.fight-btn:hover:not(:disabled) {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+.fight-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.collect-btn {
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+.collect-btn:hover {
+    background: var(--accent-gold-dim);
+}
+
+/* ============================================ */
+/* BASE TAB */
+/* ============================================ */
+#base-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.base-header {
+    padding: 16px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.base-header h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent-gold);
+    font-size: 1.3rem;
+}
+
+.buildings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.building-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s;
+}
+
+.building-card.locked {
+    opacity: 0.5;
+    background: var(--bg-dark);
+}
+
+.building-card.built {
+    border-color: var(--success);
+}
+
+.building-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--accent-gold);
+}
+
+.building-card.locked .building-name {
+    color: var(--text-dim);
+}
+
+.building-description {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.building-unlock {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+}
+
+.building-btn {
+    padding: 10px;
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.building-btn:hover:not(:disabled) {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+.building-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.build-btn {
+    background: var(--accent-gold-dim);
+    border-color: var(--accent-gold-dim);
+    color: var(--bg-dark);
+}
+
+.build-btn:hover:not(:disabled) {
+    background: var(--accent-gold);
+}
+
+/* ============================================ */
+/* GUILD TAB */
+/* ============================================ */
+#guild-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.guild-section {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.guild-section h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent-gold);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.no-heroes {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.hero-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.hero-card {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hero-card.commissioned {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.hero-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.hero-level {
+    color: var(--mana-blue);
+    font-size: 0.85rem;
+}
+
+.hero-status {
+    color: var(--success);
+    font-size: 0.8rem;
+}
+
+.train-btn {
+    padding: 8px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.train-btn:hover {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+/* ============================================ */
+/* BATTLE SCREEN */
+/* ============================================ */
+.battle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.retreat-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--health-red);
+    border-radius: 6px;
+    color: var(--health-red);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.retreat-btn:hover {
+    background: var(--health-red);
+    color: var(--bg-dark);
+}
+
+.speed-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.speed-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.speed-btn:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+.speed-btn.active {
+    background: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+.stage-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+#battle-zone {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--accent-gold);
+}
+
+#battle-stage {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.wave-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Battle Area */
+#battle-area {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+#enemy-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+#enemy-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--health-red);
+}
+
+#enemy-name.boss {
+    color: var(--accent-gold);
+    text-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+}
+
+#attack-button {
+    margin-top: 8px;
+    padding: 16px 48px;
+    font-size: 1.2rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--accent-gold) 0%, var(--accent-gold-dim) 100%);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+#attack-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+}
+
+#attack-button:active {
+    transform: translateY(0) scale(0.98);
+}
+
+#hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+#hero-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--accent-gold);
+}
+
+#hero-level {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Combat log */
+#combat-log {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg-panel-light);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: background 0.2s;
+}
+
+#log-header:hover {
+    background: var(--bg-panel-hover);
+}
+
+#log-toggle-icon {
+    font-size: 1rem;
+    color: var(--text-dim);
+    font-weight: bold;
+}
+
+#log-content {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 12px;
+    max-height: 120px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+#combat-log.collapsed #log-content {
+    max-height: 0;
+    padding: 0 12px;
+    overflow: hidden;
+}
+
+/* ============================================ */
+/* VICTORY SCREEN */
+/* ============================================ */
+#screen-victory {
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.victory-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    min-width: 350px;
+}
+
+.victory-content h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: var(--accent-gold);
+    margin-bottom: 24px;
+}
+
+#victory-rewards {
+    margin-bottom: 24px;
+}
+
+.reward-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
+}
+
+.reward-row:last-child {
+    border-bottom: none;
+}
+
+.reward-row span:first-child {
+    color: var(--text-secondary);
+}
+
+#reward-gold {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+#reward-xp {
+    color: var(--mana-blue);
+    font-weight: 600;
+}
+
+#reward-ingredients {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.continue-btn {
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--accent-gold) 0%, var(--accent-gold-dim) 100%);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+}
+
+/* ============================================ */
+/* DEFEAT SCREEN */
+/* ============================================ */
+#screen-defeat {
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.defeat-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--health-red);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    min-width: 350px;
+}
+
+.defeat-content h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: var(--health-red);
+    margin-bottom: 12px;
+}
+
+.defeat-message {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+#defeat-rewards {
+    margin-bottom: 24px;
+}
+
+#defeat-gold {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+#defeat-xp {
+    color: var(--mana-blue);
+    font-weight: 600;
+}
+
+/* ============================================ */
+/* FORGE SCREEN */
+/* ============================================ */
+#screen-forge {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    padding: 20px;
+}
+
+#screen-forge.active {
+    display: flex;
+}
+
+#forge-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.forge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    background: var(--bg-panel);
+}
+
+.forge-header h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent-gold);
+    font-size: 1.4rem;
+}
+
+.forge-gold {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.forge-section {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.forge-section:last-child {
+    border-bottom: none;
+}
+
+.forge-section h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.forge-item {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.forge-item:last-child {
+    margin-bottom: 0;
+}
+
+.forge-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.forge-item-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.forge-item-slot {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+
+.forge-item-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.forge-item-current {
+    color: var(--text-secondary);
+}
+
+.forge-item-bonus {
+    color: var(--success);
+}
+
+.forge-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.forge-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.improve-btn {
+    background: var(--mana-blue);
+    color: white;
+}
+
+.improve-btn:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.craft-btn {
+    background: var(--accent-gold-dim);
+    color: var(--bg-dark);
+}
+
+.craft-btn:hover:not(:disabled) {
+    background: var(--accent-gold);
+}
+
+.forge-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.forge-item.maxed {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.forge-item.maxed .forge-item-name {
+    color: var(--success);
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+@media (max-width: 600px) {
+    .character-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #shop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .zone-stages {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    #attack-button {
+        padding: 12px 32px;
+        font-size: 1rem;
+    }
+
+    .dashboard-nav {
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        flex-basis: calc(50% - 4px);
+    }
+
+    #world-map {
+        grid-template-columns: 1fr;
+    }
+
+    .buildings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-list {
+        grid-template-columns: 1fr;
+    }
+}
