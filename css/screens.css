@@ -875,7 +875,7 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     width: 100%;
-    max-width: 650px;
+    max-width: 700px;
     max-height: 85vh;
     overflow-y: auto;
 }
@@ -889,12 +889,19 @@
     position: sticky;
     top: 0;
     background: var(--bg-panel);
+    z-index: 1;
 }
 
 .forge-header h2 {
     font-family: 'Cinzel', serif;
     color: var(--accent-gold);
     font-size: 1.4rem;
+}
+
+.forge-header > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .forge-gold {
@@ -913,67 +920,224 @@
 
 .forge-section h3 {
     font-family: 'Cinzel', serif;
-    color: var(--text-primary);
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
 }
 
-.forge-item {
-    background: var(--bg-panel-light);
+/* Currently Equipped Section */
+.forge-equipped {
+    background: var(--bg-dark);
+}
+
+.forge-equipped h3 {
+    color: var(--text-secondary);
+}
+
+.forge-equipped-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.forge-equipped-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg-panel);
     border: 1px solid var(--border-color);
     border-radius: 8px;
+}
+
+.equipped-icon {
+    font-size: 1.8rem;
+    width: 40px;
+    text-align: center;
+}
+
+.equipped-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.equipped-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.equipped-stat {
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+/* Crafting Recipes Section */
+.forge-recipes {
+    background: rgba(234, 179, 8, 0.03);
+}
+
+.forge-recipes h3 {
+    color: var(--accent-gold);
+}
+
+.forge-recipes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.forge-recipe-card {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--accent-gold-dim);
+    border-radius: 8px;
     padding: 16px;
-    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.forge-item:last-child {
-    margin-bottom: 0;
+.forge-recipe-card.maxed {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.1);
 }
 
-.forge-item-header {
+.recipe-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
 }
 
-.forge-item-name {
+.recipe-slot {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.recipe-tier {
+    font-size: 0.75rem;
+    color: var(--accent-gold);
+    background: rgba(234, 179, 8, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.forge-recipe-card.maxed .recipe-tier {
+    color: var(--success);
+    background: rgba(34, 197, 94, 0.15);
+}
+
+.recipe-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.forge-recipe-card.maxed .recipe-name {
+    color: var(--success);
+}
+
+.recipe-stat {
+    font-size: 0.9rem;
+    color: var(--success);
+    font-weight: 500;
+}
+
+/* Upgrade Station Section */
+.forge-upgrades {
+    background: rgba(59, 130, 246, 0.03);
+}
+
+.forge-upgrades h3 {
+    color: var(--mana-blue);
+}
+
+.forge-upgrades-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.forge-upgrade-card {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--mana-blue);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.forge-upgrade-card.maxed {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upgrade-slot {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.upgrade-level {
+    display: flex;
+    gap: 4px;
+}
+
+.level-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-dark);
+    border: 1px solid var(--mana-blue);
+}
+
+.level-dot.filled {
+    background: var(--mana-blue);
+}
+
+.forge-upgrade-card.maxed .level-dot {
+    border-color: var(--success);
+}
+
+.forge-upgrade-card.maxed .level-dot.filled {
+    background: var(--success);
+}
+
+.upgrade-name {
     font-family: 'Cinzel', serif;
     font-size: 1rem;
     color: var(--text-primary);
 }
 
-.forge-item-slot {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-}
-
-.forge-item-stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 0.9rem;
-}
-
-.forge-item-current {
-    color: var(--text-secondary);
-}
-
-.forge-item-bonus {
+.forge-upgrade-card.maxed .upgrade-name {
     color: var(--success);
 }
 
-.forge-item-actions {
-    display: flex;
-    gap: 8px;
+.upgrade-preview {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
 }
 
+.upgrade-status {
+    font-size: 0.85rem;
+    color: var(--success);
+    font-weight: 500;
+}
+
+/* Forge Buttons */
 .forge-btn {
-    flex: 1;
     padding: 10px;
     border: none;
     border-radius: 6px;
@@ -981,6 +1145,7 @@
     font-weight: 600;
     font-size: 0.85rem;
     transition: all 0.2s;
+    margin-top: 4px;
 }
 
 .improve-btn {
@@ -1004,15 +1169,6 @@
 .forge-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-.forge-item.maxed {
-    border-color: var(--success);
-    background: rgba(34, 197, 94, 0.1);
-}
-
-.forge-item.maxed .forge-item-name {
-    color: var(--success);
 }
 
 /* ============================================ */
@@ -1053,6 +1209,12 @@
     }
 
     .hero-list {
+        grid-template-columns: 1fr;
+    }
+
+    .forge-equipped-grid,
+    .forge-recipes-grid,
+    .forge-upgrades-grid {
         grid-template-columns: 1fr;
     }
 }
