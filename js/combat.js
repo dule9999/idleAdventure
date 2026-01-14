@@ -245,6 +245,16 @@ function onStageComplete() {
         logCombat(`<span class="log-level">QUEST COMPLETE: ${quest.name}! Return to the job board to collect your reward.</span>`);
     }
 
+    // Enable/disable next stage button
+    const nextStageBtn = document.getElementById('btn-next-stage');
+    if (questComplete) {
+        nextStageBtn.disabled = true;
+        nextStageBtn.textContent = 'Quest Complete';
+    } else {
+        nextStageBtn.disabled = false;
+        nextStageBtn.textContent = 'Next Stage';
+    }
+
     showScreen('victory');
 }
 

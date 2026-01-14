@@ -786,6 +786,12 @@
     font-size: 0.9rem;
 }
 
+.victory-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .continue-btn {
     padding: 14px 40px;
     font-size: 1.1rem;
@@ -799,9 +805,14 @@
     transition: transform 0.1s, box-shadow 0.1s;
 }
 
-.continue-btn:hover {
+.continue-btn:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+}
+
+.continue-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* ============================================ */

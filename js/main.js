@@ -37,8 +37,18 @@ document.querySelectorAll('.speed-btn').forEach(btn => {
     });
 });
 
-// Continue button (victory screen)
-document.getElementById('btn-continue').addEventListener('click', () => {
+// Victory screen buttons
+document.getElementById('btn-next-stage').addEventListener('click', () => {
+    const questId = gameState.battle.questId;
+    const progress = gameState.questProgress[questId];
+    const nextStage = progress.findIndex(s => !s);
+
+    if (nextStage !== -1) {
+        startBattle(questId, nextStage);
+    }
+});
+
+document.getElementById('btn-back-job-board').addEventListener('click', () => {
     const questId = gameState.battle.questId;
     const quest = getQuestById(questId);
     showScreen('dashboard');
