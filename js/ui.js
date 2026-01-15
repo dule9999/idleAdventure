@@ -102,7 +102,7 @@ function renderWorldMap() {
             }
         }
 
-        const buttonText = city.id === 'wilderness' ? 'Explore' : 'Visit Job Board';
+        const buttonText = 'Visit Job Board';
 
         card.innerHTML = `
             <div class="city-header">
@@ -136,7 +136,7 @@ function openJobBoard(cityId) {
     // Header
     const header = document.createElement('div');
     header.className = 'job-board-header';
-    const headerTitle = cityId === 'wilderness' ? city.name : `${city.name} Job Board`;
+    const headerTitle = `${city.name} Job Board`;
     header.innerHTML = `
         <h2>${headerTitle}</h2>
         <button class="close-btn" id="close-job-board">&times;</button>
@@ -171,32 +171,15 @@ function openJobBoard(cityId) {
                     <button class="fight-btn" disabled>Locked</button>
                 </div>
             `;
-        } else if (quest.isWilderness) {
-            // Wilderness - no rewards shown, always fightable
-            questCard.innerHTML = `
-                <div class="quest-header">
-                    <span class="quest-name">${quest.name}</span>
-                </div>
-                <p class="quest-description">${quest.description}</p>
-                <div class="quest-progress">
-                    <span>Progress: ${completedStages} / 5</span>
-                    <div class="quest-stages">
-                        ${[0, 1, 2, 3, 4].map(i => {
-                            const done = progress && progress[i];
-                            return `<span class="quest-stage${done ? ' done' : ''}">${i + 1}</span>`;
-                        }).join('')}
-                    </div>
-                </div>
-                <div class="quest-actions">
-                    <button class="fight-btn" data-quest="${quest.id}">Explore</button>
-                </div>
-            `;
         } else {
             // Regular quest with rewards
+            const nextStage = progress ? progress.findIndex(s => !s) : 0;
+            const hasNextStage = nextStage !== -1;
+            const rewardClaimed = gameState.completedQuests.includes(quest.id);
             questCard.innerHTML = `
                 <div class="quest-header">
                     <span class="quest-name">${quest.name}</span>
-                    <span class="quest-reward">${quest.goldReward}g</span>
+                    <span class="quest-reward">${rewardClaimed ? '✓' : quest.goldReward + 'g'}</span>
                 </div>
                 <p class="quest-description">${quest.description}</p>
                 <div class="quest-progress">
@@ -204,8 +187,10 @@ function openJobBoard(cityId) {
                     <div class="quest-stages">
                         ${[0, 1, 2, 3, 4].map(i => {
                             const done = progress && progress[i];
+                            const unlocked = i === 0 || (progress && progress[i - 1]);
                             const isBoss = quest.isFinalQuest && i === 4;
-                            return `<span class="quest-stage${done ? ' done' : ''}${isBoss ? ' boss' : ''}">${isBoss ? 'B' : i + 1}</span>`;
+                            return `<span class="quest-stage${done ? ' done' : ''}${isBoss ? ' boss' : ''}${unlocked ? ' clickable' : ''}"
+                                data-quest="${quest.id}" data-stage="${i}" ${unlocked ? '' : 'data-locked'}>${isBoss ? 'B' : i + 1}</span>`;
                         }).join('')}
                     </div>
                 </div>
@@ -213,9 +198,10 @@ function openJobBoard(cityId) {
                     ${canCollect ? `
                         <button class="collect-btn" data-quest="${quest.id}">Collect Reward</button>
                     ` : `
-                        <button class="fight-btn" data-quest="${quest.id}" ${isComplete ? 'disabled' : ''}>
-                            ${isComplete ? 'Completed' : 'Fight'}
+                        <button class="fight-btn" data-quest="${quest.id}"${!hasNextStage ? ' style="display:none"' : ''}>
+                            ${isComplete ? 'Continue' : 'Fight'}
                         </button>
+                        ${isComplete ? '<span class="quest-complete-label">Click a stage to replay</span>' : ''}
                     `}
                 </div>
             `;
@@ -238,6 +224,16 @@ function openJobBoard(cityId) {
                 closeJobBoard();
                 startBattle(questId, nextStage);
             }
+        });
+    });
+
+    // Clickable stage indicators for replaying stages
+    container.querySelectorAll('.quest-stage.clickable').forEach(stageEl => {
+        stageEl.addEventListener('click', () => {
+            const questId = stageEl.dataset.quest;
+            const stageIndex = parseInt(stageEl.dataset.stage);
+            closeJobBoard();
+            startBattle(questId, stageIndex);
         });
     });
 

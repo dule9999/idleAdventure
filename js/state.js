@@ -77,6 +77,7 @@ const gameState = {
     autoAttackInterval: 1000,
     gameLoopId: null,
     combatSpeed: 1,
+    autoReplay: false,
 
     // Passive income tracking
     lastIncomeCollection: Date.now()

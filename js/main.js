@@ -37,6 +37,12 @@ document.querySelectorAll('.speed-btn').forEach(btn => {
     });
 });
 
+// Auto-replay toggle
+document.getElementById('btn-auto-replay').addEventListener('click', () => {
+    gameState.autoReplay = !gameState.autoReplay;
+    document.getElementById('btn-auto-replay').classList.toggle('active', gameState.autoReplay);
+});
+
 // Victory screen buttons
 document.getElementById('btn-next-stage').addEventListener('click', () => {
     const questId = gameState.battle.questId;
@@ -48,6 +54,11 @@ document.getElementById('btn-next-stage').addEventListener('click', () => {
     }
 });
 
+document.getElementById('btn-replay-stage').addEventListener('click', () => {
+    const battle = gameState.battle;
+    startBattle(battle.questId, battle.stageIndex);
+});
+
 document.getElementById('btn-back-job-board').addEventListener('click', () => {
     const questId = gameState.battle.questId;
     const quest = getQuestById(questId);
@@ -55,7 +66,12 @@ document.getElementById('btn-back-job-board').addEventListener('click', () => {
     openJobBoard(quest.cityId);
 });
 
-// Continue button (defeat screen)
+// Defeat screen buttons
+document.getElementById('btn-defeat-replay').addEventListener('click', () => {
+    const battle = gameState.battle;
+    startBattle(battle.questId, battle.stageIndex);
+});
+
 document.getElementById('btn-defeat-continue').addEventListener('click', () => {
     const questId = gameState.battle.questId;
     const quest = getQuestById(questId);

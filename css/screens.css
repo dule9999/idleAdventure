@@ -351,6 +351,22 @@
     color: var(--bg-dark);
 }
 
+.quest-stage.clickable {
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.quest-stage.clickable:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
+}
+
+.quest-complete-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 .quest-actions {
     display: flex;
     gap: 8px;
@@ -631,6 +647,29 @@
 .speed-btn.active {
     background: var(--accent-gold);
     border-color: var(--accent-gold);
+    color: var(--bg-dark);
+}
+
+.auto-replay-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.auto-replay-btn:hover {
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.auto-replay-btn.active {
+    background: var(--success);
+    border-color: var(--success);
     color: var(--bg-dark);
 }
 
@@ -925,6 +964,12 @@
 #defeat-xp {
     color: var(--mana-blue);
     font-weight: 600;
+}
+
+.defeat-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 /* ============================================ */

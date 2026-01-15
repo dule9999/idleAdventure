@@ -158,6 +158,7 @@
                     <button class="speed-btn" data-speed="2">2x</button>
                     <button class="speed-btn" data-speed="4">4x</button>
                 </div>
+                <button id="btn-auto-replay" class="auto-replay-btn">Auto</button>
             </header>
 
             <main id="battle-area">
@@ -210,6 +211,7 @@
                 </div>
                 <div class="victory-buttons">
                     <button id="btn-next-stage" class="continue-btn">Next Stage</button>
+                    <button id="btn-replay-stage" class="btn-secondary">Replay Stage</button>
                     <button id="btn-back-job-board" class="btn-secondary">Back to Job Board</button>
                 </div>
             </div>
@@ -220,8 +222,7 @@
         <!-- ============================================ -->
         <div id="screen-defeat" class="screen">
             <div class="defeat-content">
-                <h1>Defeated!</h1>
-                <p class="defeat-message">You have fallen in battle...</p>
+                <h1>Defeat</h1>
                 <div id="defeat-rewards">
                     <div class="reward-row" style="display: none;">
                         <span>Gold Salvaged</span>
@@ -232,7 +233,10 @@
                         <span id="defeat-xp">+50</span>
                     </div>
                 </div>
-                <button id="btn-defeat-continue" class="continue-btn">Return</button>
+                <div class="defeat-buttons">
+                    <button id="btn-defeat-replay" class="continue-btn">Replay Stage</button>
+                    <button id="btn-defeat-continue" class="btn-secondary">Back to Job Board</button>
+                </div>
             </div>
         </div>
 
